@@ -1,4 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, HostListener } from '@angular/core';
+import { BallController } from 'src/app/controllers/ballController';
+import { BricksService } from 'src/app/services/bricks.service';
 
 @Component({
   selector: 'mc-ball',
@@ -6,8 +8,5 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./ball.component.scss'],
 })
 export class BallComponent implements OnInit {
-  @Input() moveBall: number;
-  constructor() {}
-
   ngOnInit(): void {}
 }

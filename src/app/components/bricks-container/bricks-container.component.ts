@@ -1,4 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  Input,
+  HostListener,
+} from '@angular/core';
+import { BallController } from 'src/app/controllers/ballController';
+import { BricksController } from 'src/app/controllers/bricksController';
 import { BricksService } from 'src/app/services/bricks.service';
 import { IBrick } from 'src/app/types/brick.interface';
 
@@ -10,6 +18,7 @@ import { IBrick } from 'src/app/types/brick.interface';
 export class BricksContainerComponent implements OnInit, OnDestroy {
   bricksList: IBrick[][] = [];
   _subs: any = null;
+  ballController = new BallController();
 
   constructor(private bricksService: BricksService) {}
 

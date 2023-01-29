@@ -1,12 +1,10 @@
 .paddle {
     width: 200px;
     height: 50px;
-    background-color: rgb(89, 208, 235);
-    
-}
-
-.gamer {
+    background-color: rgb(144, 144, 150);
     position: relative;
     border-radius: 20px;
     bottom: -250px;
+    left: 500px;
+    background: linear-gradient(180deg, rgba(204,200,200,0.1601890756302521) 0%, rgba(255,250,250,0.3534663865546218) 46%, rgba(255,255,255,0.14338235294117652) 47%);   
 }

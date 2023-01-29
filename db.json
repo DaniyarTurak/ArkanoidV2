@@ -2,86 +2,86 @@
   "bricks": [
     {
       "id": 1,
-      "color": "#9ed0eb",
-      "width": "100px",
-      "height": "50px",
-      "status": true
+      "color": "red",
+      "width": "80px",
+      "height": "35px",
+      "status": false
     },
     {
       "id": 2,
-      "color": "#9ed0eb",
-      "width": "100px",
-      "height": "50px",
+      "color": "red",
+      "width": "80px",
+      "height": "35px",
       "status": true
     },
     {
       "id": 3,
-      "color": "#9ed0eb",
-      "width": "100px",
-      "height": "50px",
-      "status": false
+      "color": "red",
+      "width": "80px",
+      "height": "35px",
+      "status": true
     },
     {
       "id": 4,
-      "color": "#9ed0eb",
-      "width": "100px",
-      "height": "50px",
+      "color": "red",
+      "width": "80px",
+      "height": "35px",
       "status": true
     },
     {
       "id": 5,
-      "color": "#9ed0eb",
-      "width": "100px",
-      "height": "50px",
+      "color": "red",
+      "width": "80px",
+      "height": "35px",
       "status": true
     },
     {
       "id": 6,
-      "color": "#9ed0eb",
-      "width": "100px",
-      "height": "50px",
+      "color": "red",
+      "width": "80px",
+      "height": "35px",
       "status": true
     },
     {
       "id": 7,
-      "color": "#9ed0eb",
-      "width": "100px",
-      "height": "50px",
-      "status": true
-    },
-    {
-      "id": 8,
-      "color": "#9ed0eb",
-      "width": "100px",
-      "height": "50px",
-      "status": true
-    },
-    {
-      "id": 9,
-      "color": "#9ed0eb",
-      "width": "100px",
-      "height": "50px",
-      "status": true
-    },
-    {
-      "id": 10,
-      "color": "#9ed0eb",
-      "width": "100px",
-      "height": "50px",
+      "color": "red",
+      "width": "80px",
+      "height": "35px",
       "status": false
     },
     {
-      "id": 11,
-      "color": "pink",
-      "width": "100px",
-      "height": "50px",
+      "id": 8,
+      "color": "red",
+      "width": "80px",
+      "height": "35px",
+      "status": false
+    },
+    {
+      "id": 9,
+      "color": "red",
+      "width": "80px",
+      "height": "35px",
+      "status": false
+    },
+    {
+      "id": 10,
+      "color": "red",
+      "width": "80px",
+      "height": "35px",
       "status": true
+    },
+    {
+      "id": 11,
+      "color": "yellow",
+      "width": "80px",
+      "height": "35px",
+      "status": false
     },
     {
       "id": 12,
       "color": "yellow",
-      "width": "100px",
-      "height": "50px",
+      "width": "80px",
+      "height": "35px",
       "status": true
     }
   ]

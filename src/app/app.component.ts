@@ -1,4 +1,8 @@
 import { Component, HostListener } from '@angular/core';
+import { BallController } from './controllers/ballController';
+import { BricksController } from './controllers/bricksController';
+import { PaddleController } from './controllers/paddleController';
+import { BricksService } from './services/bricks.service';
 
 @Component({
   selector: 'app-root',
@@ -6,60 +10,74 @@ import { Component, HostListener } from '@angular/core';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  movePaddle: number = 600;
-  moveBall: number = 600;
+  ballController = new BallController();
+  bricksController = null;
+  paddleController = new PaddleController();
 
-  @HostListener('window:keydown', ['$event'])
-  handleKeyDown(e: KeyboardEvent) {
-    if (e.code == 'ArrowLeft') {
-      this.movePaddle -= 10;
-    } else if (e.code == 'ArrowRight') {
-      this.movePaddle += 10;
-    }
-    // if (e.code == 'ArrowLeft' || e.code == 'ArrowRight') {
-    //   let startAnimation = null;
-    //   let duration = 500;
-    //   let distance = 50;
-    //   let dx = e.code == 'ArrowLeft' ? -1 : 1;
-
-    //   const paddle = document.querySelector<HTMLElement>('.paddle');
-
-    //   requestAnimationFrame(function measure(time) {
-    //     if (!startAnimation) {
-    //       startAnimation = time;
-    //     }
-    //     console.log(time);
-
-    //     const progress = (time - startAnimation) / duration;
-    //     const translate = progress * distance;
-    //     paddle.style.transform = `translateX(${translate * dx}px)`;
-
-    //     if (progress < 1) {
-    //       requestAnimationFrame(measure);
-    //     }
-    //   });
-
-    // }
+  constructor(private bricksService: BricksService) {
+    this.bricksController = new BricksController(bricksService);
   }
 
-  // @HostListener('window:keydown.enter', ['$event'])
-  // handleEnter(e: KeyboardEvent) {
-  //   let startAnimation = null;
-  //   let duration = 500;
-  //   let distance = 50;
+  @HostListener('window:keydown', ['$event'])
+  handleKeyDown(event: KeyboardEvent) {
+    if (event.code === 'Enter') {
+      const ball = document.querySelector('.ball') as HTMLElement;
+      const ballController = this.ballController;
+      const bricks = document.querySelectorAll('.brick');
+      const bricksController = this.bricksController;
+      const paddle = document.querySelector('.paddle') as HTMLElement;
+      const paddleController = this.paddleController;
 
-  //   const ball = document.querySelector<HTMLElement>('.ball');
+      requestAnimationFrame(function measure(time) {
+        const { x, y } = ball.getBoundingClientRect();
+        ballController.progressX += ballController.dx;
+        ballController.progressY += ballController.dy;
 
-  //   requestAnimationFrame(function measure(time) {
-  //     if (!startAnimation) {
-  //       startAnimation = time;
-  //     }
+        const paddleX = paddle.getBoundingClientRect().x;
+        const paddleY = paddle.getBoundingClientRect().y;
 
-  //     const progress = (time - startAnimation) / duration;
-  //     const translate = progress * distance;
-  //     ball.style.transform = `translateX(${translate}px)`;
+        ball.style.transform = `translate(${ballController.progressX}px, ${ballController.progressY}px)`;
 
-  //     requestAnimationFrame(measure);
-  //   });
-  // }
+        if (x > paddleX && x < paddleX + 200 && y > paddleY - 50) {
+          ballController.dy = -2;
+        }
+
+        if (y < 10) {
+          ballController.dy = 2;
+        } else if (y > 430 || bricksController.isGameFinished) {
+          console.log('Game Over');
+          paddleController.progress = 0;
+          ballController.progressX = 0;
+          ballController.progressY = 0;
+          return;
+        }
+
+        if (x > 1460) {
+          ballController.dx = -2;
+        } else if (x < 10) {
+          ballController.dx = 2;
+        }
+
+        bricks.forEach((brick: HTMLElement, idx) => {
+          const brickX = brick.getBoundingClientRect().x;
+          const brickY = brick.getBoundingClientRect().y;
+
+          if (
+            x >= brickX - 10 &&
+            x <= brickX + 80 &&
+            y < brickY + 30 &&
+            brick.style.opacity !== '0'
+          ) {
+            ballController.dy = 2;
+            brick.style.opacity = '0';
+            bricksController.removeBrick(idx + 1);
+          }
+        });
+
+        if (ballController.progressX < 1050) {
+          requestAnimationFrame(measure);
+        }
+      });
+    }
+  }
 }

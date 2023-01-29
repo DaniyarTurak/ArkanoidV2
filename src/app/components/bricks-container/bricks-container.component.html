@@ -1,0 +1,12 @@
+<div *ngFor="let bricks of bricksList; let i = index" class="bricks-container">
+  <div *ngFor="let brick of bricks">
+    <mc-brick
+      [id]="brick.id"
+      [color]="brick.color"
+      [width]="brick.width"
+      [height]="brick.height"
+      [status]="brick.status"
+      (changeStatusEvent)="changeStatus($event)"
+    ></mc-brick>
+  </div>
+</div>

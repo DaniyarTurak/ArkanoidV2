@@ -1,11 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  HostListener,
-  ViewChild,
-  ViewContainerRef,
-} from '@angular/core';
-import { BallComponent } from './components/ball/ball.component';
+import { Component, ElementRef, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -13,21 +6,14 @@ import { BallComponent } from './components/ball/ball.component';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  components = [];
-  ballComponentClass = BallComponent;
+  isGameStarted: boolean = false;
 
-  constructor() {}
+  constructor(private el: ElementRef) {}
 
-  @ViewChild('container', { read: ViewContainerRef })
-  container: ViewContainerRef;
-
-  @HostListener('document:keypress', ['$event'])
-  handleKeypress(e: KeyboardEvent) {
-    if (e.code === 'Space') {
-      const component = this.container.createComponent(this.ballComponentClass);
-      component.setInput('outlier', 20);
-      console.log('Component: ', component);
-      this.components.push(component);
-    }
+  @HostListener('document:keydown', ['$event'])
+  startGame(e: KeyboardEvent): void {
+    if (e.code === 'Enter') {
+      this.isGameStarted = true;
+    } else if (e.code === 'Space') this.isGameStarted = false;
   }
 }

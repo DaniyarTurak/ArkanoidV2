@@ -1,6 +1,5 @@
-<div class="board" #board>
-  <app-ball></app-ball>
-  <div>
-    <ng-template #container> </ng-template>
-  </div>
+<div class="board">
+  <app-bricks></app-bricks>
+  <app-ball [isGameStarted]="isGameStarted"></app-ball>
+  <app-paddle [isGameStarted]="isGameStarted"></app-paddle>
 </div>

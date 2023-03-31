@@ -1,7 +1,9 @@
-import { Component, OnInit, Renderer2, ElementRef } from '@angular/core';
+import { Component, OnInit, Renderer2, ElementRef, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 import { BricksService } from 'src/app/services/bricks.service';
-import { selectBall } from 'src/app/store/ball/ball.selectors';
+import { selectBalls } from 'src/app/store/ball/ball.selectors';
+import { setBrickCoordinates } from 'src/app/store/bricks/bricks.actions';
 import { IBall } from 'src/app/types/IBall';
 
 @Component({
@@ -10,6 +12,8 @@ import { IBall } from 'src/app/types/IBall';
   styleUrls: ['./brick.component.scss'],
 })
 export class BrickComponent implements OnInit {
+  @Input() brick = null;
+
   constructor(
     private store: Store,
     private renderer: Renderer2,
@@ -18,6 +22,19 @@ export class BrickComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.brickService.setBricks(this.el.nativeElement.getBoundingClientRect());
+    if (this.brick.status) {
+      this.store.dispatch(
+        setBrickCoordinates({
+          id: this.brick.id,
+          brick: this.el.nativeElement.getBoundingClientRect(),
+          status: this.brick.status,
+        })
+      );
+    }
+
+    // this.brickService.setBricks(
+    //   this.brick.id,
+    //   this.el.nativeElement.getBoundingClientRect()
+    // );
   }
 }

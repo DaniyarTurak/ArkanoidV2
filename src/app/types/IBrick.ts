@@ -1,10 +1,6 @@
 export interface IBrick {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  top: number;
-  right: number;
-  left: number;
-  bottom: number;
+  id: number;
+  bonus: string | null;
+  brick: DOMRect | null;
+  status: boolean;
 }

@@ -1,5 +1,10 @@
 <div class="bricks-container">
-  <div *ngFor="let i of [1, 2, 3, 4, 5, 6, 7]">
-    <app-brick></app-brick>
+  <div *ngFor="let brick of bricks">
+    <app-brick
+      [ngClass]="{ invisible: !brick.status }"
+      [brick]="brick"
+    ></app-brick>
   </div>
 </div>
+
+<!-- [ngClass]="{ invisible: !brick.status }" -->

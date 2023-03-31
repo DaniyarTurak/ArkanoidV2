@@ -3,19 +3,19 @@ import { IBall } from 'src/app/types/IBall';
 import { setBallCoordinates } from './ball.actions';
 
 export interface BallState {
-  ball: DOMRect;
+  balls: IBall[];
 }
 
 export const initialState: BallState = {
-  ball: null,
+  balls: [],
 };
 
 export const ballReducer = createReducer(
   initialState,
-  on(setBallCoordinates, (state, { ball }) => {
+  on(setBallCoordinates, (state, { id, ball }) => {
     return {
       ...state,
-      ball: ball,
+      balls: { ...state.balls, id, ball },
     };
   })
 );

@@ -12,6 +12,9 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { BricksComponent } from './components/bricks/bricks.component';
 import { BrickComponent } from './components/brick/brick.component';
 import { ballReducer } from './store/ball/ball.reducer';
+import { DropBonusComponent } from './components/drop-bonus/drop-bonus.component';
+import { bricksReducer } from './store/bricks/bricks.reducer';
+import { ScoreComponent } from './components/score/score.component';
 
 @NgModule({
   declarations: [
@@ -20,12 +23,18 @@ import { ballReducer } from './store/ball/ball.reducer';
     BallComponent,
     BricksComponent,
     BrickComponent,
+    DropBonusComponent,
+    ScoreComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    StoreModule.forRoot({ paddle: paddleReducer, ball: ballReducer }),
+    StoreModule.forRoot({
+      paddle: paddleReducer,
+      ball: ballReducer,
+      bricks: bricksReducer,
+    }),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
     }),

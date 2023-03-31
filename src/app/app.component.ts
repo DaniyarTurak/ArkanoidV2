@@ -6,6 +6,7 @@ import { Component, ElementRef, HostListener } from '@angular/core';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
+  balls = [{ id: 1 }];
   isGameStarted: boolean = false;
 
   constructor(private el: ElementRef) {}

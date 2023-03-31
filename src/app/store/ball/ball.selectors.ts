@@ -4,7 +4,7 @@ import { BallState } from './ball.reducer';
 
 const select = (state: AppState) => state.ball;
 
-export const selectBall = createSelector(
+export const selectBalls = createSelector(
   select,
-  (state: BallState) => state.ball
+  (state: BallState) => state.balls
 );

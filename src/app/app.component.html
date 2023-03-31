@@ -1,5 +1,8 @@
 <div class="board">
+  <app-score></app-score>
   <app-bricks></app-bricks>
-  <app-ball [isGameStarted]="isGameStarted"></app-ball>
+  <div class="ball-container" *ngFor="let ball of balls">
+    <app-ball [id]="ball.id" [isGameStarted]="isGameStarted"></app-ball>
+  </div>
   <app-paddle [isGameStarted]="isGameStarted"></app-paddle>
 </div>

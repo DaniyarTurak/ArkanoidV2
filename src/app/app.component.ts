@@ -1,4 +1,5 @@
 import { Component, ElementRef, HostListener } from '@angular/core';
+import { Board } from './constants/Board';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,11 @@ export class AppComponent {
   startGame(e: KeyboardEvent): void {
     if (e.code === 'Enter') {
       this.isGameStarted = true;
+      const { width: boardWidth, height: boardHeight } = this.el.nativeElement
+        .querySelector('.board')
+        .getBoundingClientRect();
+      const board = Board.Instance;
+      board.setValues(boardWidth, boardHeight);
     } else if (e.code === 'Space') this.isGameStarted = false;
   }
 }

@@ -1,5 +1,11 @@
+@use 'src/app/custom-styles/variable'; 
+
 .brick {
     width: 80px;
     height: 55px;
     background-color: blueviolet;
 }
+
+.invisible {
+    background-color: variable.$board-color;
+  }

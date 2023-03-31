@@ -202,7 +202,6 @@ export class BallComponent implements OnChanges, OnInit {
           ball.top <= brick.bottom &&
           status
         ) {
-          console.log(`Status: ${status}, Brick: ${JSON.stringify(brick)}`);
           this.bricksService.destroyBrick(id);
 
           // determine the side of the collision

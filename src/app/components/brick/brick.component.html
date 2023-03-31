@@ -1,1 +1,3 @@
-<div class="brick"></div>
+<div class="brick" [ngClass]="{ invisible: !brick.status }">
+  <app-drop-bonus *ngIf="brick.bonus" [brick]="brick"></app-drop-bonus>
+</div>

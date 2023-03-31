@@ -1,9 +1,6 @@
 <div class="bricks-container">
   <div *ngFor="let brick of bricks">
-    <app-brick
-      [ngClass]="{ invisible: !brick.status }"
-      [brick]="brick"
-    ></app-brick>
+    <app-brick [brick]="brick"></app-brick>
   </div>
 </div>
 

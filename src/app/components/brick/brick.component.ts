@@ -21,7 +21,6 @@ import { IBall } from 'src/app/types/IBall';
 })
 export class BrickComponent implements OnInit {
   @Input() brick = null;
-  @Output() bonusConnected = new EventEmitter();
 
   constructor(
     private store: Store,
@@ -45,9 +44,5 @@ export class BrickComponent implements OnInit {
     //   this.brick.id,
     //   this.el.nativeElement.getBoundingClientRect()
     // );
-  }
-
-  bonusConnection(bonusName: string): void {
-    this.bonusConnected.emit(bonusName);
   }
 }

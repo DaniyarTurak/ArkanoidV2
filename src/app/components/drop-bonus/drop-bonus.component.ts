@@ -36,7 +36,6 @@ export class DropBonusComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.board = Board.Instance;
     if (!this.brick.status) {
       this._subscription = this.store
         .select(selectPaddle)
@@ -46,14 +45,19 @@ export class DropBonusComponent implements OnInit {
   }
 
   dropBonus(): void {
+    this.board = Board.Instance;
     const drop = this.el.nativeElement.querySelector('.drop-bonus'),
-      { y, bottom } = drop.getBoundingClientRect();
+      { y, bottom, left, right } = drop.getBoundingClientRect();
     this.progressY += 3;
     this.renderer.setStyle(drop, 'margin-top', `${this.progressY}px`);
 
-    if (bottom >= this.paddle.top) {
+    if (
+      bottom >= this.paddle.top &&
+      left >= this.paddle.left &&
+      right <= this.paddle.right
+    ) {
       this._subscription.unsubscribe();
-      //this.bonusConnected.emit(this.brick.bonusName);
+
       this.store.dispatch(setModeBall({ mode: this.brick.bonusName }));
       this.renderer.setStyle(this.el.nativeElement, 'display', 'none');
     } else if (bottom >= this.board.height) {

@@ -2,8 +2,11 @@
 
 .brick {
     width: 80px;
-    height: 55px;
+    height: 30px;
+    border-radius: 10px;
+    margin: 10px 20px;
     background-color: blueviolet;
+    position: relative;
 }
 
 .invisible {

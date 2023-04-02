@@ -60,6 +60,4 @@ export class AppComponent implements OnInit {
       this.gameOver(GameEnded.YouLost);
     }
   }
-
-  bonusConnection(bonusName: string): void {}
 }

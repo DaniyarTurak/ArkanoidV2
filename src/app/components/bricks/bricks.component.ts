@@ -17,7 +17,6 @@ import { BricksService } from 'src/app/services/bricks.service';
 })
 export class BricksComponent implements OnInit, OnChanges {
   @Input() isGameStarted: boolean = false;
-  @Output() bonusConnected = new EventEmitter();
   bricks = [];
   _subscription = new Subscription();
 
@@ -30,8 +29,4 @@ export class BricksComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {}
-
-  bonusConnection(bonusName: string): void {
-    this.bonusConnected.emit(bonusName);
-  }
 }

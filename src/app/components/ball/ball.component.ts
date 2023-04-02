@@ -47,6 +47,11 @@ export class BallComponent implements OnChanges, OnInit {
 
   ngOnInit(): void {}
 
+  @HostListener('document:keydown', ['$event'])
+  hjdjd(e: KeyboardEvent): void {
+    if (e.code == 'KeyK') this.moveBall();
+  }
+
   ngOnChanges(): void {
     if (this.isGameStarted) {
       const { x } = this.el.nativeElement
@@ -75,23 +80,25 @@ export class BallComponent implements OnChanges, OnInit {
       `translate(${this.ballX}px, ${this.ballY}px)`
     );
 
-    let ballRadius = 10;
-
     // Get the position and dimensions of the ball and paddle
     const ball = this.el.nativeElement
       .querySelector('.ball')
       .getBoundingClientRect();
     const board = Board.Instance;
 
+    let ballRadius = ball.width / 2;
+
     if (ball.bottom >= board.height) {
       this.removeBall();
     } else {
-      if (ball.x + ballRadius > board.width || ball.x - ballRadius < 0) {
-        // Check for collisions with walls
-        this.dx = -this.dx; // Reverse x-velocity
+      if (
+        ball.right - ballRadius >= board.width ||
+        ball.left + ballRadius <= 0
+      ) {
+        this.dx = -this.dx;
       }
-      if (ball.y - ballRadius < 0) {
-        this.dy = -this.dy; // Reverse y-velocity
+      if (ball.top - ballRadius < 0) {
+        this.dy = -this.dy;
       }
 
       this.ballPaddleCollusion(ball);
@@ -106,13 +113,13 @@ export class BallComponent implements OnChanges, OnInit {
     });
 
     if (this.paddle.mode === BallMode.Speed) {
-      this.dx = this.dx * 1.5;
-      this.dy = this.dy * 1.5;
+      this.dx = this.dx * 1.3;
+      this.dy = this.dy * 1.3;
       setTimeout(() => {
-        this.dx = this.dx / 1.5;
-        this.dy = this.dy / 1.5;
+        this.dx = this.dx / 1.3;
+        this.dy = this.dy / 1.3;
         this.store.dispatch(setModeBall({ mode: BallMode.Default }));
-      }, 100);
+      }, 70);
     } else if (this.paddle.mode === BallMode.Power) {
       setTimeout(() => {
         this.store.dispatch(setModeBall({ mode: BallMode.Default }));
@@ -133,24 +140,28 @@ export class BallComponent implements OnChanges, OnInit {
 
       if (sameDirection) {
         if (hitPercentage >= 0.45 && hitPercentage <= 0.55) {
-          this.dy = -this.dy;
+          this.dy = -5;
         } else if (hitPercentage > 0.55) {
-          this.dx = this.dx / hitPercentage;
-          this.dy = -this.dy * hitPercentage;
+          //paddleRight dx=8 dy=-2
+          //paddleLeft dx=-2, dy=-8
+          this.dx = this.paddle.direction > 0 ? 8 : -2;
+          this.dy = -5 + 3 * this.paddle.direction;
         } else {
-          this.dx = this.dx / (1 - hitPercentage);
-          this.dy = -this.dy * (1 - hitPercentage);
+          //paddleRight dx=2 dy=-8
+          //paddleLeft dx=-8 d=-2
+          this.dx = this.paddle.direction > 0 ? 2 : -8;
+          this.dy = -5 - 3 * this.paddle.direction;
         }
       } else {
         if (hitPercentage >= 0.45 && hitPercentage <= 0.55) {
-          this.dx = -this.dx;
-          this.dy = -this.dy;
+          this.dy = -5;
+          this.dx = 5 * this.paddle.direction;
         } else if (hitPercentage > 0.55) {
-          this.dx = -this.dx * hitPercentage;
-          this.dy = -this.dy / hitPercentage;
+          this.dx = this.paddle.direction > 0 ? 8 : -2;
+          this.dy = -5 + 3 * this.paddle.direction;
         } else {
-          this.dx = -this.dx * (1 - hitPercentage);
-          this.dy = -this.dy / (1 - hitPercentage);
+          this.dx = this.paddle.direction > 0 ? 2 : -8;
+          this.dy = -5 - 3 * this.paddle.direction;
         }
       }
     } else if (
@@ -178,7 +189,6 @@ export class BallComponent implements OnChanges, OnInit {
           return;
         }
 
-        // determine the side of the collision
         const ballCenterX = ball.left + ball.width / 2;
         const ballCenterY = ball.top + ball.height / 2;
         const blockCenterX = brick.left + brick.width / 2;
@@ -200,22 +210,17 @@ export class BallComponent implements OnChanges, OnInit {
           }
         }
 
-        // react to the collision
         switch (collisionSide) {
           case 'bottom':
-            // ball hits the bottom of the block
             this.dy = -this.dy;
             break;
           case 'top':
-            // ball hits the top of the block
             this.dy = -this.dy;
             break;
           case 'left':
-            // ball hits the left side of the block
             this.dx = -this.dx;
             break;
           case 'right':
-            // ball hits the right side of the block
             this.dx = -this.dx;
             break;
         }

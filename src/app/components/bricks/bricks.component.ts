@@ -29,12 +29,7 @@ export class BricksComponent implements OnInit, OnChanges {
     });
   }
 
-  ngOnChanges(): void {
-    if (this.isGameStarted) {
-      const bricksList =
-        this.el.nativeElement.children[0].querySelectorAll('.brick');
-    }
-  }
+  ngOnChanges(): void {}
 
   bonusConnection(bonusName: string): void {
     this.bonusConnected.emit(bonusName);

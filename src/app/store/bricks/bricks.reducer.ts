@@ -1,5 +1,10 @@
 import { createReducer, on } from '@ngrx/store';
-import { deleteBrick, setBrickCoordinates } from './bricks.actions';
+import {
+  bonusDropped,
+  deleteBrick,
+  setBrickCoordinates,
+} from './bricks.actions';
+import { IBrick } from 'src/app/types/IBrick';
 
 export interface BricksCoordinateState {
   bricks: any;
@@ -21,11 +26,12 @@ export const bricksReducer = createReducer(
     return {
       ...state,
       bricks: state.bricks.map((b) => {
-        if (b.id === id && b.status) {
+        if (b.id === id) {
           return { ...b, status: false };
         }
         return b;
       }),
+      //bricks: state.bricks.filter((b) => b.id !== id),
     };
   })
 );

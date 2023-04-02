@@ -1,4 +1,12 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ElementRef,
+  Output,
+  EventEmitter,
+  Input,
+  OnChanges,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { BricksService } from 'src/app/services/bricks.service';
 
@@ -7,7 +15,9 @@ import { BricksService } from 'src/app/services/bricks.service';
   templateUrl: './bricks.component.html',
   styleUrls: ['./bricks.component.scss'],
 })
-export class BricksComponent implements OnInit {
+export class BricksComponent implements OnInit, OnChanges {
+  @Input() isGameStarted: boolean = false;
+  @Output() bonusConnected = new EventEmitter();
   bricks = [];
   _subscription = new Subscription();
 
@@ -17,7 +27,16 @@ export class BricksComponent implements OnInit {
     this._subscription = this.bricksService.getBricks().subscribe((bricks) => {
       this.bricks = bricks;
     });
+  }
 
-    // this._subscription.unsubscribe();
+  ngOnChanges(): void {
+    if (this.isGameStarted) {
+      const bricksList =
+        this.el.nativeElement.children[0].querySelectorAll('.brick');
+    }
+  }
+
+  bonusConnection(bonusName: string): void {
+    this.bonusConnected.emit(bonusName);
   }
 }

@@ -15,6 +15,7 @@ import { ballReducer } from './store/ball/ball.reducer';
 import { DropBonusComponent } from './components/drop-bonus/drop-bonus.component';
 import { bricksReducer } from './store/bricks/bricks.reducer';
 import { ScoreComponent } from './components/score/score.component';
+import { ColorChangeDirective } from './custom-directives/change-color.directive';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { ScoreComponent } from './components/score/score.component';
     BrickComponent,
     DropBonusComponent,
     ScoreComponent,
+    ColorChangeDirective,
   ],
   imports: [
     BrowserModule,

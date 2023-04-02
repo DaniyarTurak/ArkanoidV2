@@ -1,7 +1,11 @@
 <div class="bricks-container">
   <div *ngFor="let brick of bricks">
-    <app-brick [brick]="brick"></app-brick>
+    <app-brick
+      [brick]="brick"
+      (bonusConnected)="bonusConnection($event)"
+    ></app-brick>
   </div>
 </div>
 
 <!-- [ngClass]="{ invisible: !brick.status }" -->
+<!--  -->

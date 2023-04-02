@@ -3,6 +3,7 @@ import { IBrick } from '../types/IBrick';
 import { Observable, of } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { deleteBrick } from '../store/bricks/bricks.actions';
+import { BallMode } from '../types/IPaddle';
 
 @Injectable({
   providedIn: 'root',
@@ -11,63 +12,71 @@ export class BricksService {
   bricks: IBrick[] = [
     {
       id: 1,
-      bonus: 'speed',
+      bonusName: BallMode.Speed,
       brick: null,
       status: true,
+      hitCount: 2,
     },
     {
       id: 2,
-      bonus: 'power',
+      bonusName: BallMode.Power,
       brick: null,
       status: true,
+      hitCount: 2,
     },
     {
       id: 3,
-      bonus: null,
+      bonusName: BallMode.Default,
       brick: null,
       status: true,
+      hitCount: 2,
     },
     {
       id: 4,
-      bonus: null,
+      bonusName: BallMode.Default,
       brick: null,
       status: true,
+      hitCount: 2,
     },
     {
       id: 5,
-      bonus: null,
+      bonusName: BallMode.Default,
       brick: null,
       status: true,
+      hitCount: 2,
     },
     {
       id: 6,
-      bonus: null,
+      bonusName: BallMode.Default,
       brick: null,
       status: true,
+      hitCount: 2,
     },
     {
       id: 7,
-      bonus: null,
+      bonusName: BallMode.Default,
       brick: null,
       status: true,
+      hitCount: 2,
     },
   ];
 
   constructor(private store: Store) {}
 
-  // setBricks(id: number, brick: DOMRect): void {
-  //   const objIndex = this.bricks.findIndex((obj) => obj.id === id);
-  //   this.bricks[objIndex] = { ...this.bricks[objIndex], brick };
-  // }
+  // setBricks(id: number, bricks: DOMRect[]): void {}
 
   getBricks(): Observable<any[]> {
     return of(this.bricks);
   }
 
-  destroyBrick(id: number): void {
+  destroyBrick(id: number, mode: BallMode = BallMode.Default): void {
     const objIndex = this.bricks.findIndex((obj) => obj.id === id);
-    console.log('Destroy Id: ' + id);
-    this.bricks[objIndex] = { ...this.bricks[objIndex], status: false };
-    this.store.dispatch(deleteBrick({ id }));
+    this.bricks[objIndex].hitCount -= 1;
+
+    if (this.bricks[objIndex].hitCount === 0 || mode === BallMode.Power) {
+      this.bricks[objIndex].hitCount = 0;
+      this.bricks[objIndex] = { ...this.bricks[objIndex], status: false };
+      this.store.dispatch(deleteBrick({ id }));
+    }
   }
 }

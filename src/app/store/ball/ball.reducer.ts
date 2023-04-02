@@ -15,7 +15,7 @@ export const ballReducer = createReducer(
   on(setBallCoordinates, (state, { id, ball }) => {
     return {
       ...state,
-      balls: { ...state.balls, id, ball },
+      balls: [...state.balls, { id, ball }],
     };
   })
 );

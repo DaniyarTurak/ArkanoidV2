@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
-import { IPaddle } from 'src/app/types/IPaddle';
-import { setPaddleCoordinates } from './paddle.actions';
+import { BallMode, IPaddle } from 'src/app/types/IPaddle';
+import { setModeBall, setPaddleCoordinates } from './paddle.actions';
 
 export interface PaddleState {
   paddle: IPaddle;
@@ -17,6 +17,7 @@ export const initialState: PaddleState = {
     right: 0,
     bottom: 0,
     direction: 0,
+    mode: BallMode.Default,
   },
 };
 
@@ -41,5 +42,14 @@ export const paddleReducer = createReducer(
         },
       };
     }
-  )
+  ),
+  on(setModeBall, (state, { mode }) => {
+    return {
+      ...state,
+      paddle: {
+        ...state.paddle,
+        mode,
+      },
+    };
+  })
 );

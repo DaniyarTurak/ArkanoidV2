@@ -1,1 +1,6 @@
-<div class="drop-bonus">{{ brick.bonus }}</div>
+<div
+  class="drop-bonus"
+  [ngStyle]="{ 'background-color': !brick.status && 'pink' }"
+>
+  {{ brick.bonusName }}
+</div>

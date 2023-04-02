@@ -1,3 +1,12 @@
-<div class="brick" [ngClass]="{ invisible: !brick.status }">
-  <app-drop-bonus *ngIf="brick.bonus" [brick]="brick"></app-drop-bonus>
+<div
+  class="brick"
+  [ngClass]="{ invisible: !brick.status }"
+  [ccColorChange]="brick.hitCount"
+>
+  <app-drop-bonus
+    *ngIf="brick.bonusName"
+    [brick]="brick"
+    (bonusConnected)="bonusConnection($event)"
+  ></app-drop-bonus>
 </div>
+<!--  -->

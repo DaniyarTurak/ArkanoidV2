@@ -1,8 +1,17 @@
 <div class="board">
   <app-score></app-score>
-  <app-bricks></app-bricks>
+  <app-bricks
+    [isGameStarted]="isGameStarted"
+    (bonusConnected)="bonusConnection($event)"
+  ></app-bricks>
   <div class="ball-container" *ngFor="let ball of balls">
-    <app-ball [id]="ball.id" [isGameStarted]="isGameStarted"></app-ball>
+    <app-ball
+      [id]="ball.id"
+      [isGameStarted]="isGameStarted"
+      (destroyBall)="removeBall($event)"
+    ></app-ball>
   </div>
   <app-paddle [isGameStarted]="isGameStarted"></app-paddle>
 </div>
+
+<!--  -->

@@ -1,5 +1,13 @@
-import { Component, OnInit, Renderer2, ElementRef, Input } from '@angular/core';
-import { Store } from '@ngrx/store';
+import {
+  Component,
+  OnInit,
+  Renderer2,
+  ElementRef,
+  Input,
+  Output,
+  EventEmitter,
+} from '@angular/core';
+import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { BricksService } from 'src/app/services/bricks.service';
 import { selectBalls } from 'src/app/store/ball/ball.selectors';
@@ -13,6 +21,7 @@ import { IBall } from 'src/app/types/IBall';
 })
 export class BrickComponent implements OnInit {
   @Input() brick = null;
+  @Output() bonusConnected = new EventEmitter();
 
   constructor(
     private store: Store,
@@ -36,5 +45,9 @@ export class BrickComponent implements OnInit {
     //   this.brick.id,
     //   this.el.nativeElement.getBoundingClientRect()
     // );
+  }
+
+  bonusConnection(bonusName: string): void {
+    this.bonusConnected.emit(bonusName);
   }
 }

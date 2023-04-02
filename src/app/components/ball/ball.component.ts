@@ -6,15 +6,19 @@ import {
   OnChanges,
   OnInit,
   Renderer2,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { BallService } from 'src/app/services/ball.service';
 import { Store } from '@ngrx/store';
 import { selectPaddle } from 'src/app/store/paddle/paddle.selectors';
-import { IPaddle } from 'src/app/types/IPaddle';
+import { BallMode, IPaddle } from 'src/app/types/IPaddle';
 import { setBallCoordinates } from 'src/app/store/ball/ball.actions';
 import { BricksService } from 'src/app/services/bricks.service';
 import { IBrick } from 'src/app/types/IBrick';
 import { selectBricks } from 'src/app/store/bricks/bricks.selectors';
+import { Board } from 'src/app/constants/Board';
+import { setModeBall } from 'src/app/store/paddle/paddle.actions';
 
 @Component({
   selector: 'app-ball',
@@ -24,11 +28,12 @@ import { selectBricks } from 'src/app/store/bricks/bricks.selectors';
 export class BallComponent implements OnChanges, OnInit {
   @Input() id!: number;
   @Input() isGameStarted: boolean = false;
+  @Output() destroyBall = new EventEmitter();
 
   dx: number = 5;
   dy: number = -5;
-  ballX: number = 100;
-  ballY: number = -10;
+  ballX: number = 0;
+  ballY: number = 0;
   paddle: IPaddle = null;
   bricks: IBrick[] = [];
 
@@ -48,10 +53,12 @@ export class BallComponent implements OnChanges, OnInit {
         .querySelector('.ball')
         .getBoundingClientRect();
       this.ballX = x;
+      this.store.select(selectBricks).subscribe((bricks) => {
+        this.bricks = bricks;
+      });
 
       this.ballService.moveBall(() => this.moveBall());
     } else {
-      this.ballX = 100;
       this.ballY = 10;
       this.dx = 5;
       this.dy = -5;
@@ -74,79 +81,43 @@ export class BallComponent implements OnChanges, OnInit {
     const ball = this.el.nativeElement
       .querySelector('.ball')
       .getBoundingClientRect();
-    const board = this.el.nativeElement.parentElement;
+    const board = Board.Instance;
 
-    // Check for collisions with walls
-    if (ball.x + ballRadius > board.offsetWidth || ball.x - ballRadius < 0) {
-      this.dx = -this.dx; // Reverse x-velocity
+    if (ball.bottom >= board.height) {
+      this.removeBall();
+    } else {
+      if (ball.x + ballRadius > board.width || ball.x - ballRadius < 0) {
+        // Check for collisions with walls
+        this.dx = -this.dx; // Reverse x-velocity
+      }
+      if (ball.y - ballRadius < 0) {
+        this.dy = -this.dy; // Reverse y-velocity
+      }
+
+      this.ballPaddleCollusion(ball);
+      this.ballBricksCollusion(ball);
     }
-    if (ball.y - ballRadius < 0) {
-      this.dy = -this.dy; // Reverse y-velocity
-    }
-
-    this.ballPaddleCollusion(ball);
-    this.ballBricksCollusion(ball);
-    // console.log(`Ball: X: ${ball.x}, Y: ${ball.y}`);
-
-    // this.bricksService.getBricks().subscribe((bricks) => {
-    //   bricks.forEach(({ id, brick }) => {
-    //     // check for intersection between the ball and the block
-    //     if (
-    //       ball.right >= brick.left &&
-    //       ball.left <= brick.right &&
-    //       ball.bottom >= brick.top &&
-    //       ball.top <= brick.bottom
-    //     ) {
-    //       // determine the side of the collision
-    //       const ballCenterX = ball.left + ball.width / 2;
-    //       const ballCenterY = ball.top + ball.height / 2;
-    //       const blockCenterX = brick.left + brick.width / 2;
-    //       const blockCenterY = brick.top + brick.height / 2;
-
-    //       const dx = ballCenterX - blockCenterX;
-    //       const dy = ballCenterY - blockCenterY;
-    //       const width = (ball.width + brick.width) / 2;
-    //       const height = (ball.height + brick.height) / 2;
-    //       const crossWidth = width * dy;
-    //       const crossHeight = height * dx;
-    //       let collisionSide = null;
-
-    //       if (Math.abs(dx) <= width && Math.abs(dy) <= height) {
-    //         if (crossWidth > crossHeight) {
-    //           collisionSide = crossWidth > -crossHeight ? 'bottom' : 'left';
-    //         } else {
-    //           collisionSide = crossWidth > -crossHeight ? 'right' : 'top';
-    //         }
-    //       }
-
-    //       // react to the collision
-    //       switch (collisionSide) {
-    //         case 'bottom':
-    //           // ball hits the bottom of the block
-    //           this.dy = -this.dy;
-    //           break;
-    //         case 'top':
-    //           // ball hits the top of the block
-    //           this.dy = -this.dy;
-    //           break;
-    //         case 'left':
-    //           // ball hits the left side of the block
-    //           this.dx = -this.dx;
-    //           break;
-    //         case 'right':
-    //           // ball hits the right side of the block
-    //           this.dx = -this.dx;
-    //           break;
-    //       }
-    //     }
-    //   });
-    // });
   }
 
+  //todo: change
   ballPaddleCollusion(ball: DOMRect): void {
     this.store.select(selectPaddle).subscribe((paddle) => {
       this.paddle = paddle;
     });
+
+    if (this.paddle.mode === BallMode.Speed) {
+      this.dx = this.dx * 1.5;
+      this.dy = this.dy * 1.5;
+      setTimeout(() => {
+        this.dx = this.dx / 1.5;
+        this.dy = this.dy / 1.5;
+        this.store.dispatch(setModeBall({ mode: BallMode.Default }));
+      }, 100);
+    } else if (this.paddle.mode === BallMode.Power) {
+      setTimeout(() => {
+        this.store.dispatch(setModeBall({ mode: BallMode.Default }));
+      }, 2000);
+    }
 
     if (
       ball.left >= this.paddle.left &&
@@ -193,60 +164,71 @@ export class BallComponent implements OnChanges, OnInit {
   }
 
   ballBricksCollusion(ball: DOMRect): void {
-    this.store.select(selectBricks).subscribe((bricks) => {
-      bricks.forEach(({ id, brick, status }) => {
-        if (
-          ball.right >= brick.left &&
-          ball.left <= brick.right &&
-          ball.bottom >= brick.top &&
-          ball.top <= brick.bottom &&
-          status
-        ) {
-          this.bricksService.destroyBrick(id);
+    this.bricks.forEach(({ id, brick, status }) => {
+      if (
+        ball.right >= brick.left &&
+        ball.left <= brick.right &&
+        ball.bottom >= brick.top &&
+        ball.top <= brick.bottom &&
+        status
+      ) {
+        this.bricksService.destroyBrick(id, this.paddle.mode);
 
-          // determine the side of the collision
-          const ballCenterX = ball.left + ball.width / 2;
-          const ballCenterY = ball.top + ball.height / 2;
-          const blockCenterX = brick.left + brick.width / 2;
-          const blockCenterY = brick.top + brick.height / 2;
+        if (this.paddle.mode === BallMode.Power) {
+          return;
+        }
 
-          const dx = ballCenterX - blockCenterX;
-          const dy = ballCenterY - blockCenterY;
-          const width = (ball.width + brick.width) / 2;
-          const height = (ball.height + brick.height) / 2;
-          const crossWidth = width * dy;
-          const crossHeight = height * dx;
-          let collisionSide = null;
+        // determine the side of the collision
+        const ballCenterX = ball.left + ball.width / 2;
+        const ballCenterY = ball.top + ball.height / 2;
+        const blockCenterX = brick.left + brick.width / 2;
+        const blockCenterY = brick.top + brick.height / 2;
 
-          if (Math.abs(dx) <= width && Math.abs(dy) <= height) {
-            if (crossWidth > crossHeight) {
-              collisionSide = crossWidth > -crossHeight ? 'bottom' : 'left';
-            } else {
-              collisionSide = crossWidth > -crossHeight ? 'right' : 'top';
-            }
-          }
+        const dx = ballCenterX - blockCenterX;
+        const dy = ballCenterY - blockCenterY;
+        const width = (ball.width + brick.width) / 2;
+        const height = (ball.height + brick.height) / 2;
+        const crossWidth = width * dy;
+        const crossHeight = height * dx;
+        let collisionSide = null;
 
-          // react to the collision
-          switch (collisionSide) {
-            case 'bottom':
-              // ball hits the bottom of the block
-              this.dy = -this.dy;
-              break;
-            case 'top':
-              // ball hits the top of the block
-              this.dy = -this.dy;
-              break;
-            case 'left':
-              // ball hits the left side of the block
-              this.dx = -this.dx;
-              break;
-            case 'right':
-              // ball hits the right side of the block
-              this.dx = -this.dx;
-              break;
+        if (Math.abs(dx) <= width && Math.abs(dy) <= height) {
+          if (crossWidth > crossHeight) {
+            collisionSide = crossWidth > -crossHeight ? 'bottom' : 'left';
+          } else {
+            collisionSide = crossWidth > -crossHeight ? 'right' : 'top';
           }
         }
-      });
+
+        // react to the collision
+        switch (collisionSide) {
+          case 'bottom':
+            // ball hits the bottom of the block
+            this.dy = -this.dy;
+            break;
+          case 'top':
+            // ball hits the top of the block
+            this.dy = -this.dy;
+            break;
+          case 'left':
+            // ball hits the left side of the block
+            this.dx = -this.dx;
+            break;
+          case 'right':
+            // ball hits the right side of the block
+            this.dx = -this.dx;
+            break;
+        }
+      }
     });
+  }
+
+  removeBall(): void {
+    this.ballX = 100;
+    this.ballY = 10;
+    this.dx = 5;
+    this.dy = -5;
+    this.ballService.stopBall();
+    this.destroyBall.emit(this.id);
   }
 }

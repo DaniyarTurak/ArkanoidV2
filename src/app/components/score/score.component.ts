@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { selectBricks } from 'src/app/store/bricks/bricks.selectors';
 import { IBrick } from 'src/app/types/IBrick';

@@ -1,6 +1,9 @@
+import { BallMode } from './IPaddle';
+
 export interface IBrick {
   id: number;
-  bonus: string | null;
+  bonusName: BallMode;
   brick: DOMRect | null;
   status: boolean;
+  hitCount: number;
 }

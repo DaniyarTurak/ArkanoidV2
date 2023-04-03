@@ -170,7 +170,6 @@ export class BricksService {
   destroyBrick(id: number, mode: BallMode = BallMode.Default): void {
     const objIndex = this.bricks.findIndex((obj) => obj.id === id);
     this.bricks[objIndex].hitCount -= 1;
-    console.log('mode: ', mode);
 
     if (this.bricks[objIndex].hitCount === 0 || mode === BallMode.Power) {
       this.bricks[objIndex].hitCount = 0;

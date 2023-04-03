@@ -45,6 +45,9 @@ export class AppComponent implements OnInit {
     } else if (e.code === 'Space') {
       this.isGameStarted = false;
       this._subscription.unsubscribe();
+    } else if (e.code == 'KeyK') {
+      //console.log(this.balls);
+      this.balls.push({ id: this.balls[this.balls.length - 1].id + 1 });
     }
   }
 

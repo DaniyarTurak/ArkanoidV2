@@ -55,26 +55,32 @@ export class BallComponent implements OnChanges, OnInit {
 
   ngOnInit(): void {}
 
-  @HostListener('document:keydown', ['$event'])
-  hjdjd(e: KeyboardEvent): void {
-    if (e.code == 'KeyK') this.moveBall();
-  }
-
   ngOnChanges(): void {
     if (this.isGameStarted) {
-      const { x } = this.el.nativeElement
-        .querySelector('.ball')
-        .getBoundingClientRect();
-      this.ballX = x;
       this.store.select(selectBricks).subscribe((bricks) => {
         this.bricks = bricks;
       });
 
-      this.ballService.moveBall(() => this.moveBall());
+      const { x, y } = this.el.nativeElement
+        .querySelector('.ball')
+        .getBoundingClientRect();
+      this.ballX = x;
+
+      const previousBall =
+        this.el.nativeElement.previousElementSibling.querySelector('.ball');
+
+      if (previousBall) {
+        const { x, y } = previousBall.getBoundingClientRect();
+        this.ballX = -x;
+        this.ballY = -y;
+      }
+
+      this.moveBall();
+
+      // this.ballService.moveBall(() => this.moveBall());
     } else {
-      this.ballY = 10;
-      this.dx = 5;
-      this.dy = -5;
+      this.dx = BallSpeed.generalSpeed;
+      this.dy = -BallSpeed.generalSpeed;
       this.ballService.stopBall();
     }
   }
@@ -111,6 +117,7 @@ export class BallComponent implements OnChanges, OnInit {
 
       this.ballPaddleCollusion(ball);
       this.ballBricksCollusion(ball);
+      requestAnimationFrame(() => this.moveBall());
     }
   }
 
@@ -212,8 +219,8 @@ export class BallComponent implements OnChanges, OnInit {
   ballBricksCollusion(ball: DOMRect): void {
     this.bricks.forEach(({ id, brick, status }) => {
       if (
-        ball.right >= brick.left &&
-        ball.left <= brick.right &&
+        ball.right - ball.width / 2 >= brick.left &&
+        ball.left + ball.width / 2 <= brick.right &&
         ball.bottom >= brick.top &&
         ball.top <= brick.bottom &&
         status
@@ -226,11 +233,11 @@ export class BallComponent implements OnChanges, OnInit {
 
         const ballCenterX = ball.left + ball.width / 2;
         const ballCenterY = ball.top + ball.height / 2;
-        const blockCenterX = brick.left + brick.width / 2;
-        const blockCenterY = brick.top + brick.height / 2;
+        const brickCenterX = brick.left + brick.width / 2;
+        const brickCenterY = brick.top + brick.height / 2;
 
-        const dx = ballCenterX - blockCenterX;
-        const dy = ballCenterY - blockCenterY;
+        const dx = ballCenterX - brickCenterX;
+        const dy = ballCenterY - brickCenterY;
         const width = (ball.width + brick.width) / 2;
         const height = (ball.height + brick.height) / 2;
         const crossWidth = width * dy;

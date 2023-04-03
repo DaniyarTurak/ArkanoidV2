@@ -5,10 +5,11 @@
     height: 30px;
     border-radius: 10px;
     margin: 10px 20px;
-    background: variable.$linear-gradiet;
     position: relative;
+    background: variable.$linear-gradiet;
 }
 
 .invisible {
+    background: none;
     background-color: variable.$board-color;
   }

@@ -1,13 +1,14 @@
 <div class="board">
   <app-score></app-score>
   <app-bricks [isGameStarted]="isGameStarted"></app-bricks>
-  <div class="ball-container" *ngFor="let ball of balls">
-    <app-ball
-      [id]="ball.id"
-      [isGameStarted]="isGameStarted"
-      (destroyBall)="removeBall($event)"
-    ></app-ball>
-  </div>
+
+  <app-ball
+    *ngFor="let ball of balls"
+    [id]="ball.id"
+    [isGameStarted]="isGameStarted"
+    (destroyBall)="removeBall($event)"
+  ></app-ball>
+
   <app-paddle [isGameStarted]="isGameStarted"></app-paddle>
 </div>
 

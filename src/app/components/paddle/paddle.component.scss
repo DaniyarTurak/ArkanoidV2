@@ -1,11 +1,13 @@
 @use 'sass:math';
+@use 'src/app/custom-styles/variable';
 
-$paddle-width: 15%;
+
 
 .paddle {
-    width: $paddle-width;
+    width: variable.$paddle-width;
     border-radius: 10px;
     height: 30px;
+    background: variable.$linear-gradiet;
     background-color: gainsboro;
     position: absolute;
     bottom: 0;

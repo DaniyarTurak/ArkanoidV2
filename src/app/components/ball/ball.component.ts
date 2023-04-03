@@ -20,6 +20,11 @@ import { selectBricks } from 'src/app/store/bricks/bricks.selectors';
 import { Board } from 'src/app/constants/Board';
 import { setModeBall } from 'src/app/store/paddle/paddle.actions';
 
+enum BallSpeed {
+  generalSpeed = 5,
+  speedBoosted = 10,
+}
+
 @Component({
   selector: 'app-ball',
   templateUrl: './ball.component.html',
@@ -30,12 +35,15 @@ export class BallComponent implements OnChanges, OnInit {
   @Input() isGameStarted: boolean = false;
   @Output() destroyBall = new EventEmitter();
 
-  dx: number = 5;
-  dy: number = -5;
+  dx: number = BallSpeed.generalSpeed;
+  dy: number = -BallSpeed.generalSpeed;
   ballX: number = 0;
   ballY: number = 0;
   paddle: IPaddle = null;
   bricks: IBrick[] = [];
+  BallMode = BallMode;
+  speedMode: boolean = false;
+  powerMode: boolean = false;
 
   constructor(
     private ballService: BallService,
@@ -113,15 +121,22 @@ export class BallComponent implements OnChanges, OnInit {
     });
 
     if (this.paddle.mode === BallMode.Speed) {
-      this.dx = this.dx * 1.3;
-      this.dy = this.dy * 1.3;
+      this.dx = this.dx > 0 ? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
+      this.dy = this.dy > 0 ? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
+      this.speedMode = true;
       setTimeout(() => {
-        this.dx = this.dx / 1.3;
-        this.dy = this.dy / 1.3;
+        this.dx =
+          this.dx > 0 ? BallSpeed.generalSpeed : -BallSpeed.generalSpeed;
+        this.dy =
+          this.dy > 0 ? BallSpeed.generalSpeed : -BallSpeed.generalSpeed;
+
+        this.speedMode = false;
         this.store.dispatch(setModeBall({ mode: BallMode.Default }));
-      }, 70);
+      }, 1000);
     } else if (this.paddle.mode === BallMode.Power) {
+      this.powerMode = true;
       setTimeout(() => {
+        this.powerMode = false;
         this.store.dispatch(setModeBall({ mode: BallMode.Default }));
       }, 2000);
     }
@@ -140,28 +155,48 @@ export class BallComponent implements OnChanges, OnInit {
 
       if (sameDirection) {
         if (hitPercentage >= 0.45 && hitPercentage <= 0.55) {
-          this.dy = -5;
+          this.dy = -BallSpeed.generalSpeed;
         } else if (hitPercentage > 0.55) {
-          //paddleRight dx=8 dy=-2
-          //paddleLeft dx=-2, dy=-8
-          this.dx = this.paddle.direction > 0 ? 8 : -2;
-          this.dy = -5 + 3 * this.paddle.direction;
+          this.dx =
+            this.paddle.direction > 0
+              ? BallSpeed.speedBoosted
+              : -BallSpeed.generalSpeed;
+          this.dy =
+            -BallSpeed.generalSpeed +
+            (BallSpeed.speedBoosted / BallSpeed.generalSpeed) *
+              this.paddle.direction;
         } else {
-          //paddleRight dx=2 dy=-8
-          //paddleLeft dx=-8 d=-2
-          this.dx = this.paddle.direction > 0 ? 2 : -8;
-          this.dy = -5 - 3 * this.paddle.direction;
+          this.dx =
+            this.paddle.direction > 0
+              ? BallSpeed.generalSpeed
+              : -BallSpeed.speedBoosted;
+          this.dy =
+            -BallSpeed.generalSpeed -
+            (BallSpeed.speedBoosted / BallSpeed.generalSpeed) *
+              this.paddle.direction;
         }
       } else {
         if (hitPercentage >= 0.45 && hitPercentage <= 0.55) {
-          this.dy = -5;
-          this.dx = 5 * this.paddle.direction;
+          this.dy = -BallSpeed.generalSpeed;
+          this.dx = BallSpeed.generalSpeed * this.paddle.direction;
         } else if (hitPercentage > 0.55) {
-          this.dx = this.paddle.direction > 0 ? 8 : -2;
-          this.dy = -5 + 3 * this.paddle.direction;
+          this.dx =
+            this.paddle.direction > 0
+              ? BallSpeed.speedBoosted
+              : -BallSpeed.generalSpeed;
+          this.dy =
+            -BallSpeed.generalSpeed +
+            (BallSpeed.speedBoosted / BallSpeed.generalSpeed) *
+              this.paddle.direction;
         } else {
-          this.dx = this.paddle.direction > 0 ? 2 : -8;
-          this.dy = -5 - 3 * this.paddle.direction;
+          this.dx =
+            this.paddle.direction > 0
+              ? BallSpeed.generalSpeed
+              : -BallSpeed.speedBoosted;
+          this.dy =
+            -BallSpeed.generalSpeed -
+            (BallSpeed.speedBoosted / BallSpeed.generalSpeed) *
+              this.paddle.direction;
         }
       }
     } else if (

@@ -32,7 +32,8 @@ enum BallSpeed {
 })
 export class BallComponent implements OnChanges, OnInit {
   @Input() id!: number;
-  @Input() isGameStarted: boolean = false;
+  @Input() startFlag: boolean = false;
+  @Input() pauseFlag: boolean = false;
   @Output() destroyBall = new EventEmitter();
 
   dx: number = BallSpeed.generalSpeed;
@@ -45,8 +46,6 @@ export class BallComponent implements OnChanges, OnInit {
   speedMode: boolean = false;
   powerMode: boolean = false;
 
-  ballPressed: boolean = false;
-
   constructor(
     private ballService: BallService,
     private renderer: Renderer2,
@@ -55,44 +54,52 @@ export class BallComponent implements OnChanges, OnInit {
     private bricksService: BricksService
   ) {}
 
-  ngOnInit(): void {}
-
   @HostListener('document:keydown', ['$event'])
-  keyDown(event: KeyboardEvent): void {
-    if (event.code === 'Enter') {
-      this.store.select(selectBricks).subscribe((bricks) => {
-        this.bricks = bricks;
-      });
+  handleBallEnter(e: KeyboardEvent) {
+    if (e.code === 'Enter') {
+      if (this.startFlag) {
+        this.store.select(selectBricks).subscribe((bricks) => {
+          this.bricks = bricks;
+        });
 
-      const { x, y } = this.el.nativeElement
-        .querySelector('.ball')
-        .getBoundingClientRect();
-      this.ballX = x;
+        const { x: ballX, y: ballY } = this.el.nativeElement
+          .querySelector('.ball')
+          .getBoundingClientRect();
 
-      console.log('BallX:', this.ballX);
+        const previousBall =
+          this.el.nativeElement.previousElementSibling.querySelector('.ball');
 
-      const previousBall =
-        this.el.nativeElement.previousElementSibling.querySelector('.ball');
+        if (previousBall) {
+          const { x: previousBallX, y: previousBallY } =
+            previousBall.getBoundingClientRect();
+          this.ballX = -previousBallX;
+          this.ballY = -previousBallY;
+        } else {
+          this.ballX = ballX;
+        }
 
-      if (previousBall) {
-        const { x, y } = previousBall.getBoundingClientRect();
-        this.ballX = -x;
-        this.ballY = -y;
+        this.moveBall();
       }
-
-      this.moveBall();
     }
   }
 
+  ngOnInit(): void {}
+
   ngOnChanges(): void {
-    // else {
-    //   this.dx = BallSpeed.generalSpeed;
-    //   this.dy = -BallSpeed.generalSpeed;
-    //   this.ballService.stopBall();
-    // }
+    const ball = this.el.nativeElement.querySelector('.ball');
+
+    if (!this.startFlag) {
+      this.renderer.setStyle(ball, 'transform', `translateX(-50%)`);
+      this.renderer.addClass(ball, 'center');
+    } else {
+      this.renderer.removeClass(ball, 'center');
+    }
   }
 
   moveBall(): void {
+    if (!this.startFlag && !this.pauseFlag) {
+      return;
+    }
     this.ballX += this.dx;
     this.ballY += this.dy;
     this.renderer.setStyle(
@@ -112,7 +119,7 @@ export class BallComponent implements OnChanges, OnInit {
     if (ball.bottom >= board.height) {
       this.removeBall();
     } else {
-      if (ball.right + ballRadius >= board.width || ball.left <= 0) {
+      if (ball.right + ballRadius / 2 >= board.width || ball.left <= 0) {
         this.dx = -this.dx;
       }
       if (ball.top <= 0) {
@@ -127,11 +134,13 @@ export class BallComponent implements OnChanges, OnInit {
 
   //todo: change
   ballPaddleCollusion(ball: DOMRect): void {
-    this.store.select(selectPaddle).subscribe((paddle) => {
-      this.paddle = paddle;
+    this.store.select(selectPaddle).subscribe((res) => {
+      this.paddle = res;
     });
 
-    if (this.paddle.mode === BallMode.Speed) {
+    const { paddle, mode, direction } = this.paddle;
+
+    if (mode === BallMode.Speed) {
       this.dx = this.dx * 5; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
       this.dy = this.dy * 5; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
       this.speedMode = true;
@@ -144,7 +153,7 @@ export class BallComponent implements OnChanges, OnInit {
         this.speedMode = false;
         this.store.dispatch(setModeBall({ mode: BallMode.Default }));
       }, 100);
-    } else if (this.paddle.mode === BallMode.Power) {
+    } else if (mode === BallMode.Power) {
       this.powerMode = true;
       setTimeout(() => {
         this.powerMode = false;
@@ -153,67 +162,102 @@ export class BallComponent implements OnChanges, OnInit {
     }
 
     if (
-      ball.left >= this.paddle.left &&
-      ball.right <= this.paddle.right &&
-      ball.bottom >= this.paddle.top
+      ball.left >= paddle.left &&
+      ball.right <= paddle.right &&
+      ball.bottom >= paddle.top
     ) {
-      let ballHitPosition = ball.left + ball.width / 2 - this.paddle.left;
-      let hitPercentage = ballHitPosition / this.paddle.width;
+      let ballHitPosition = ball.left + ball.width / 2 - paddle.left;
+      let ballHitPositionPercent = ballHitPosition / paddle.width;
 
-      let sameDirection =
-        (this.paddle.direction > 0 && this.dx > 0) ||
-        (this.paddle.direction < 0 && this.dx < 0);
+      let paddleDirection = direction;
+      let generalSpeed = BallSpeed.generalSpeed;
+      let speedBoosted = BallSpeed.speedBoosted;
 
-      if (sameDirection) {
-        if (hitPercentage >= 0.45 && hitPercentage <= 0.55) {
-          this.dy = -BallSpeed.generalSpeed;
-        } else if (hitPercentage > 0.55) {
-          this.dx =
-            this.paddle.direction > 0
-              ? BallSpeed.speedBoosted
-              : -BallSpeed.generalSpeed;
-          this.dy =
-            -BallSpeed.generalSpeed +
-            (BallSpeed.speedBoosted / BallSpeed.generalSpeed) *
-              this.paddle.direction;
+      let dx, dy;
+
+      if (paddleDirection * this.dx > 0) {
+        if (ballHitPositionPercent >= 0.45 && ballHitPositionPercent <= 0.55) {
+          dy = -generalSpeed;
+        } else if (ballHitPositionPercent > 0.55) {
+          dx = paddleDirection > 0 ? speedBoosted : -generalSpeed;
+          dy = -generalSpeed + (speedBoosted / generalSpeed) * paddleDirection;
         } else {
-          this.dx =
-            this.paddle.direction > 0
-              ? BallSpeed.generalSpeed
-              : -BallSpeed.speedBoosted;
-          this.dy =
-            -BallSpeed.generalSpeed -
-            (BallSpeed.speedBoosted / BallSpeed.generalSpeed) *
-              this.paddle.direction;
+          dx = paddleDirection > 0 ? generalSpeed : -speedBoosted;
+          dy = -generalSpeed - (speedBoosted / generalSpeed) * paddleDirection;
         }
       } else {
-        if (hitPercentage >= 0.45 && hitPercentage <= 0.55) {
-          this.dy = -BallSpeed.generalSpeed;
-          this.dx = BallSpeed.generalSpeed * this.paddle.direction;
-        } else if (hitPercentage > 0.55) {
-          this.dx =
-            this.paddle.direction > 0
-              ? BallSpeed.speedBoosted
-              : -BallSpeed.generalSpeed;
-          this.dy =
-            -BallSpeed.generalSpeed +
-            (BallSpeed.speedBoosted / BallSpeed.generalSpeed) *
-              this.paddle.direction;
+        if (ballHitPositionPercent >= 0.45 && ballHitPositionPercent <= 0.55) {
+          dy = -generalSpeed;
+          dx = generalSpeed * paddleDirection;
+        } else if (ballHitPositionPercent > 0.55) {
+          dx = paddleDirection > 0 ? speedBoosted : -generalSpeed;
+          dy = -generalSpeed + (speedBoosted / generalSpeed) * paddleDirection;
         } else {
-          this.dx =
-            this.paddle.direction > 0
-              ? BallSpeed.generalSpeed
-              : -BallSpeed.speedBoosted;
-          this.dy =
-            -BallSpeed.generalSpeed -
-            (BallSpeed.speedBoosted / BallSpeed.generalSpeed) *
-              this.paddle.direction;
+          dx = paddleDirection > 0 ? generalSpeed : -speedBoosted;
+          dy = -generalSpeed - (speedBoosted / generalSpeed) * paddleDirection;
         }
       }
+
+      this.dx = dx;
+      this.dy = dy;
+
+      // let ballHitPosition = ball.left + ball.width / 2 - this.paddle.left;
+      // let hitPercentage = ballHitPosition / this.paddle.width;
+
+      // let sameDirection =
+      //   (this.paddle.direction > 0 && this.dx > 0) ||
+      //   (this.paddle.direction < 0 && this.dx < 0);
+
+      // if (sameDirection) {
+      //   if (hitPercentage >= 0.45 && hitPercentage <= 0.55) {
+      //     this.dy = -BallSpeed.generalSpeed;
+      //   } else if (hitPercentage > 0.55) {
+      //     this.dx =
+      //       this.paddle.direction > 0
+      //         ? BallSpeed.speedBoosted
+      //         : -BallSpeed.generalSpeed;
+      //     this.dy =
+      //       -BallSpeed.generalSpeed +
+      //       (BallSpeed.speedBoosted / BallSpeed.generalSpeed) *
+      //         this.paddle.direction;
+      //   } else {
+      //     this.dx =
+      //       this.paddle.direction > 0
+      //         ? BallSpeed.generalSpeed
+      //         : -BallSpeed.speedBoosted;
+      //     this.dy =
+      //       -BallSpeed.generalSpeed -
+      //       (BallSpeed.speedBoosted / BallSpeed.generalSpeed) *
+      //         this.paddle.direction;
+      //   }
+      // } else {
+      //   if (hitPercentage >= 0.45 && hitPercentage <= 0.55) {
+      //     this.dy = -BallSpeed.generalSpeed;
+      //     this.dx = BallSpeed.generalSpeed * this.paddle.direction;
+      //   } else if (hitPercentage > 0.55) {
+      //     this.dx =
+      //       this.paddle.direction > 0
+      //         ? BallSpeed.speedBoosted
+      //         : -BallSpeed.generalSpeed;
+      //     this.dy =
+      //       -BallSpeed.generalSpeed +
+      //       (BallSpeed.speedBoosted / BallSpeed.generalSpeed) *
+      //         this.paddle.direction;
+      //   } else {
+      //     this.dx =
+      //       this.paddle.direction > 0
+      //         ? BallSpeed.generalSpeed
+      //         : -BallSpeed.speedBoosted;
+      //     this.dy =
+      //       -BallSpeed.generalSpeed -
+      //       (BallSpeed.speedBoosted / BallSpeed.generalSpeed) *
+      //         this.paddle.direction;
+      //   }
+      // }
     } else if (
-      ball.bottom >= this.paddle.top &&
-      ball.left < this.paddle.right &&
-      ball.right > this.paddle.left
+      ball.bottom >= paddle.top &&
+      ball.left < paddle.right &&
+      ball.right > paddle.left
     ) {
       this.dy = -this.dy;
       this.dx = -this.dx;
@@ -222,6 +266,7 @@ export class BallComponent implements OnChanges, OnInit {
 
   ballBricksCollusion(ball: DOMRect): void {
     this.bricks.forEach(({ id, brick, status }) => {
+      const { paddle, mode, direction } = this.paddle;
       if (
         ball.bottom >= brick.top &&
         ball.top <= brick.bottom &&
@@ -229,8 +274,8 @@ export class BallComponent implements OnChanges, OnInit {
         ball.right + ball.width <= brick.right &&
         status
       ) {
-        this.bricksService.destroyBrick(id, this.paddle.mode);
-        if (this.paddle.mode === BallMode.Power) {
+        this.bricksService.destroyBrick(id, mode);
+        if (mode === BallMode.Power) {
           return;
         }
         this.dy = -this.dy;
@@ -241,8 +286,8 @@ export class BallComponent implements OnChanges, OnInit {
         ball.right - ball.width >= brick.left &&
         status
       ) {
-        this.bricksService.destroyBrick(id, this.paddle.mode);
-        if (this.paddle.mode === BallMode.Power) {
+        this.bricksService.destroyBrick(id, mode);
+        if (mode === BallMode.Power) {
           return;
         }
         this.dx = -this.dx;
@@ -315,11 +360,7 @@ export class BallComponent implements OnChanges, OnInit {
   }
 
   removeBall(): void {
-    this.ballX = 100;
-    this.ballY = 10;
-    this.dx = 5;
-    this.dy = -5;
-    this.ballService.stopBall();
+    //this.ballService.stopBall();
     this.destroyBall.emit(this.id);
   }
 }

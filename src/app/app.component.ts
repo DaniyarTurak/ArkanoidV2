@@ -5,6 +5,7 @@ import { selectBricks } from './store/bricks/bricks.selectors';
 import { IBrick } from './types/IBrick';
 import { Subscription } from 'rxjs';
 import { UserService } from './services/user.service';
+import { BallService } from './services/ball.service';
 
 enum GameEnded {
   YouWon = 'You Won!',
@@ -22,11 +23,13 @@ export class AppComponent implements OnInit {
   startFlag: boolean = false;
   pauseFlag: boolean = false;
   gameOverFlag: boolean = false;
+  ballMoveFlag: boolean = false;
 
   constructor(
     private store: Store,
     private el: ElementRef,
-    private userService: UserService
+    private userService: UserService,
+    private ballService: BallService
   ) {}
 
   ngOnInit(): void {}
@@ -43,16 +46,8 @@ export class AppComponent implements OnInit {
             this.gameOver(GameEnded.YouWon);
           }
         });
-    } else if (e.code === 'Space') {
-      //this.gameOverFlag = true;
-      //localStorage.clear();
-      // const newScore = 13;
-      // let arr = [10, 11, 15, 16, 17];
-      // arr.push(newScore);
-      // arr.sort();
-      //localStorage.setItem('top-scorers', JSON.stringify(arr.slice(0, 5)));
-      // this.isGameStarted = false;
-      // this._subscription.unsubscribe();
+
+      this.ballMoveFlag = true;
     } else if (e.code == 'KeyK') {
       this.balls.push({ id: this.balls[this.balls.length - 1].id + 1 });
     } else if (e.code === 'Escape' && this.startFlag) {
@@ -95,7 +90,11 @@ export class AppComponent implements OnInit {
     board.setValues(boardWidth, boardHeight);
   }
 
-  stopPauseGame(pauseFlag: boolean): void {
-    this.pauseFlag = pauseFlag;
+  restartGame(): void {
+    this.balls = [{ id: 1 }];
+    this.pauseFlag = false;
+    this.startFlag = false;
+    this.gameOverFlag = false;
+    this.ballMoveFlag = false;
   }
 }

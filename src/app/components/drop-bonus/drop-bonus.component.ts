@@ -51,11 +51,8 @@ export class DropBonusComponent implements OnInit {
     this.progressY += 3;
     this.renderer.setStyle(drop, 'margin-top', `${this.progressY}px`);
 
-    if (
-      bottom >= this.paddle.top &&
-      left >= this.paddle.left &&
-      right <= this.paddle.right
-    ) {
+    const { paddle, mode, direction } = this.paddle;
+    if (bottom >= paddle.top && left >= paddle.left && right <= paddle.right) {
       this._subscription.unsubscribe();
 
       this.store.dispatch(setModeBall({ mode: this.brick.bonusName }));

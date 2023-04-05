@@ -13,7 +13,7 @@ import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./game-over-content.component.scss'],
 })
 export class GameOverContentComponent implements OnInit, OnChanges {
-  @Output() pauseGame = new EventEmitter();
+  @Output() restartGame = new EventEmitter();
   faArrowLeftLong = faArrowLeftLong;
   list_top_scorers = [];
 
@@ -30,5 +30,7 @@ export class GameOverContentComponent implements OnInit, OnChanges {
 
   ngOnChanges(): void {}
 
-  handleRestartClick(): void {}
+  handleRestartClick(): void {
+    this.restartGame.emit();
+  }
 }

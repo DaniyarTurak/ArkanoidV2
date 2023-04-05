@@ -16,3 +16,12 @@
 .powerMode { 
     background-color: red;
 }
+
+.removeAll {
+    left: 0%;
+}
+
+.center {
+    left: 50%;
+    transform: translateX(-50%);
+}

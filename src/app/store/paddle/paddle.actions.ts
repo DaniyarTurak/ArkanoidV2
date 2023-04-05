@@ -4,14 +4,7 @@ import { BallMode } from 'src/app/types/IPaddle';
 export const setPaddleCoordinates = createAction(
   '[Paddle] Set Paddle Coordinates',
   props<{
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    top: number;
-    left: number;
-    right: number;
-    bottom: number;
+    paddle: DOMRect;
     direction: number;
   }>()
 );

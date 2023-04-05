@@ -8,41 +8,24 @@ export interface PaddleState {
 
 export const initialState: PaddleState = {
   paddle: {
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    direction: 0,
+    paddle: null,
     mode: BallMode.Default,
+    direction: 1,
   },
 };
 
 export const paddleReducer = createReducer(
   initialState,
-  on(
-    setPaddleCoordinates,
-    (state, { x, y, width, height, top, left, right, bottom, direction }) => {
-      return {
-        ...state,
-        paddle: {
-          ...state.paddle,
-          x,
-          y,
-          width,
-          height,
-          top,
-          left,
-          right,
-          bottom,
-          direction,
-        },
-      };
-    }
-  ),
+  on(setPaddleCoordinates, (state, { paddle, direction }) => {
+    return {
+      ...state,
+      paddle: {
+        ...state.paddle,
+        paddle,
+        direction,
+      },
+    };
+  }),
   on(setModeBall, (state, { mode }) => {
     return {
       ...state,

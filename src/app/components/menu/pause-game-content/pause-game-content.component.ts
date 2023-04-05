@@ -7,14 +7,14 @@ import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./pause-game-content.component.scss'],
 })
 export class PauseGameContentComponent {
-  @Output() pauseGame = new EventEmitter();
+  @Output() restartGame = new EventEmitter();
   faArrowLeftLong = faArrowLeftLong;
 
   pauseFlag: boolean = false;
   aboutFlag: boolean = false;
 
-  handlePauseClick(): void {
-    this.pauseGame.emit(this.pauseFlag);
+  handleRestartClick(): void {
+    this.restartGame.emit();
   }
 
   handleAboutClick(): void {

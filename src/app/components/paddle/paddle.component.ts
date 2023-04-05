@@ -6,6 +6,7 @@ import {
   HostListener,
   Input,
   Output,
+  OnChanges,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Board } from 'src/app/constants/Board';
@@ -16,10 +17,11 @@ import { setPaddleCoordinates } from 'src/app/store/paddle/paddle.actions';
   templateUrl: './paddle.component.html',
   styleUrls: ['./paddle.component.scss'],
 })
-export class PaddleComponent implements OnInit {
+export class PaddleComponent implements OnInit, OnChanges {
   @Input() startFlag!: boolean;
+  @Input() pauseFlag!: boolean;
+  @Input() ballMoveFlag!: boolean;
 
-  ballPressed: boolean = false;
   direction: number = 0;
 
   constructor(
@@ -30,13 +32,23 @@ export class PaddleComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  ngOnChanges(): void {
+    const paddle = this.el.nativeElement.querySelector('.paddle');
+
+    if (!this.startFlag) {
+      this.renderer.setStyle(paddle, 'transform', `translateX(-50%)`);
+      this.renderer.addClass(paddle, 'center');
+    } else {
+      this.renderer.removeClass(paddle, 'center');
+      //   this.renderer.removeClass(ball, 'center');
+    }
+  }
+
   @HostListener('document:keydown', ['$event'])
   handleKeyDown(e: KeyboardEvent): void {
     if (e.code === 'ArrowRight' || e.code === 'ArrowLeft') {
       this.direction += e.code === 'ArrowRight' ? 30 : -30;
       this.movePaddleByKeyboard();
-    } else if (e.code === 'Enter') {
-      this.ballPressed = true;
     }
   }
 
@@ -50,26 +62,23 @@ export class PaddleComponent implements OnInit {
 
   @HostListener('document:mousemove', ['$event'])
   handleMouseMove(e: MouseEvent): void {
-    if (this.startFlag) {
+    if (this.startFlag && !this.pauseFlag) {
       const board = Board.Instance;
 
-      const { x, y, width, height, top, left, right, bottom } =
-        this.el.nativeElement.querySelector('.paddle').getBoundingClientRect();
+      const paddle = this.el.nativeElement
+        .querySelector('.paddle')
+        .getBoundingClientRect();
 
-      if (e.clientX - width / 2 >= 0 && e.clientX <= board.width - width / 2) {
+      if (
+        e.clientX - paddle.width / 2 >= 0 &&
+        e.clientX <= board.width - paddle.width / 2
+      ) {
         if (e.movementX >= 0) this.direction = 1; // right
         else this.direction = -1; // left
 
         this.store.dispatch(
           setPaddleCoordinates({
-            x,
-            y,
-            width,
-            height,
-            top,
-            left,
-            right,
-            bottom,
+            paddle,
             direction: this.direction,
           })
         );
@@ -77,10 +86,10 @@ export class PaddleComponent implements OnInit {
         this.renderer.setStyle(
           this.el.nativeElement.querySelector('.paddle'),
           'transform',
-          `translateX(${e.clientX - width / 2}px)`
+          `translateX(${e.clientX - paddle.width / 2}px)`
         );
 
-        if (!this.ballPressed) {
+        if (!this.ballMoveFlag) {
           this.renderer.setStyle(
             this.el.nativeElement.parentElement.querySelector('.ball'),
             'transform',

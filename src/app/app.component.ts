@@ -41,11 +41,6 @@ export class AppComponent implements OnInit {
           }
         });
       this.isGameStarted = true;
-      const { width: boardWidth, height: boardHeight } = this.el.nativeElement
-        .querySelector('.board')
-        .getBoundingClientRect();
-      const board = Board.Instance;
-      board.setValues(boardWidth, boardHeight);
     } else if (e.code === 'Space') {
       this.gameOverFlag = true;
 
@@ -83,6 +78,11 @@ export class AppComponent implements OnInit {
   startingTheGame(startFlag: boolean): void {
     this.startFlag = startFlag;
     console.log('Starting the game');
+    const { width: boardWidth, height: boardHeight } = this.el.nativeElement
+      .querySelector('.board')
+      .getBoundingClientRect();
+    const board = Board.Instance;
+    board.setValues(boardWidth, boardHeight);
   }
 
   stopPauseGame(pauseFlag: boolean): void {

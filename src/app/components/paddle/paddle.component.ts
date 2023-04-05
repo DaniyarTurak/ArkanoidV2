@@ -8,6 +8,7 @@ import {
   Output,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { Board } from 'src/app/constants/Board';
 import { setPaddleCoordinates } from 'src/app/store/paddle/paddle.actions';
 
 @Component({
@@ -47,43 +48,47 @@ export class PaddleComponent implements OnInit {
   @HostListener('document:mousemove', ['$event'])
   handleMouseMove(e: MouseEvent): void {
     if (this.isGameStarted) {
+      const board = Board.Instance;
+
       const { x, y, width, height, top, left, right, bottom } =
         this.el.nativeElement.querySelector('.paddle').getBoundingClientRect();
 
-      if (e.movementX >= 0) this.direction = 1; // right
-      else this.direction = -1; // left
+      if (e.clientX - width / 2 >= 0 && e.clientX <= board.width - width / 2) {
+        if (e.movementX >= 0) this.direction = 1; // right
+        else this.direction = -1; // left
 
-      this.store.dispatch(
-        setPaddleCoordinates({
-          x,
-          y,
-          width,
-          height,
-          top,
-          left,
-          right,
-          bottom,
-          direction: this.direction,
-        })
-      );
-
-      this.renderer.setStyle(
-        this.el.nativeElement.querySelector('.paddle'),
-        'transform',
-        `translateX(${e.clientX - width / 2}px)`
-      );
-
-      if (this.moveBeforeStart) {
-        this.renderer.setStyle(
-          this.el.nativeElement.parentElement.querySelector('.ball'),
-          'transform',
-          `translateX(${
-            e.clientX -
-            this.el.nativeElement.parentElement.querySelector('.ball')
-              .offsetWidth /
-              2
-          }px)`
+        this.store.dispatch(
+          setPaddleCoordinates({
+            x,
+            y,
+            width,
+            height,
+            top,
+            left,
+            right,
+            bottom,
+            direction: this.direction,
+          })
         );
+
+        this.renderer.setStyle(
+          this.el.nativeElement.querySelector('.paddle'),
+          'transform',
+          `translateX(${e.clientX - width / 2}px)`
+        );
+
+        if (this.moveBeforeStart) {
+          this.renderer.setStyle(
+            this.el.nativeElement.parentElement.querySelector('.ball'),
+            'transform',
+            `translateX(${
+              e.clientX -
+              this.el.nativeElement.parentElement.querySelector('.ball')
+                .offsetWidth /
+                2
+            }px)`
+          );
+        }
       }
     }
   }

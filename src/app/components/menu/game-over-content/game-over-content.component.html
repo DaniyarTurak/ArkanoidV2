@@ -2,8 +2,8 @@
   <div class="top-scorers">
     Top scorers:
 
-    <ul *ngFor="let scorer of list_top_scorers">
-      <li>{{ scorer }}</li>
+    <ul *ngFor="let scorer of list_top_scorers; let i = index">
+      <li>{{ i + 1 }}. {{ scorer.name }} {{ scorer.score }}</li>
     </ul>
   </div>
   <div class="btn-container" *ngIf="!aboutFlag">

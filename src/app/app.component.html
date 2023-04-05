@@ -5,11 +5,11 @@
   <app-ball
     *ngFor="let ball of balls"
     [id]="ball.id"
-    [isGameStarted]="isGameStarted"
+    [isGameStarted]="startFlag"
     (destroyBall)="removeBall($event)"
   ></app-ball>
 
-  <app-paddle [isGameStarted]="startFlag && !pauseFlag"></app-paddle>
+  <app-paddle [startFlag]="startFlag && !pauseFlag"></app-paddle>
   <app-menu *ngIf="!startFlag">
     <app-start-game-content
       (startGame)="startingTheGame($event)"

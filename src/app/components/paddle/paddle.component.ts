@@ -17,8 +17,9 @@ import { setPaddleCoordinates } from 'src/app/store/paddle/paddle.actions';
   styleUrls: ['./paddle.component.scss'],
 })
 export class PaddleComponent implements OnInit {
-  @Input() isGameStarted: boolean = false;
-  @Output() moveBeforeStart: boolean = true;
+  @Input() startFlag!: boolean;
+
+  ballPressed: boolean = false;
   direction: number = 0;
 
   constructor(
@@ -34,6 +35,8 @@ export class PaddleComponent implements OnInit {
     if (e.code === 'ArrowRight' || e.code === 'ArrowLeft') {
       this.direction += e.code === 'ArrowRight' ? 30 : -30;
       this.movePaddleByKeyboard();
+    } else if (e.code === 'Enter') {
+      this.ballPressed = true;
     }
   }
 
@@ -47,7 +50,7 @@ export class PaddleComponent implements OnInit {
 
   @HostListener('document:mousemove', ['$event'])
   handleMouseMove(e: MouseEvent): void {
-    if (this.isGameStarted) {
+    if (this.startFlag) {
       const board = Board.Instance;
 
       const { x, y, width, height, top, left, right, bottom } =
@@ -77,7 +80,7 @@ export class PaddleComponent implements OnInit {
           `translateX(${e.clientX - width / 2}px)`
         );
 
-        if (this.moveBeforeStart) {
+        if (!this.ballPressed) {
           this.renderer.setStyle(
             this.el.nativeElement.parentElement.querySelector('.ball'),
             'transform',

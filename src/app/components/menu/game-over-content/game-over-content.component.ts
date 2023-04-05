@@ -21,12 +21,11 @@ export class GameOverContentComponent implements OnInit, OnChanges {
   aboutFlag: boolean = false;
 
   ngOnInit(): void {
-    this.list_top_scorers = localStorage
-      .getItem('top-scorers')
-      .replace('[', '')
-      .replace(']', '')
-      .split(',');
-    console.log(this.list_top_scorers);
+    this.list_top_scorers = JSON.parse(
+      localStorage.getItem('top_scorers')
+    ).sort((a, b) => b.score - a.score);
+
+    console.log('Top_Scorer: ', this.list_top_scorers);
   }
 
   ngOnChanges(): void {}

@@ -18,7 +18,6 @@ export class MenuComponent {
   constructor() {}
 
   handleAboutClick(): void {
-    console.log('clicked');
     this.menuOptions = MenuOptions.About;
   }
 }

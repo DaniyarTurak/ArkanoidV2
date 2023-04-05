@@ -1,6 +1,6 @@
 <div class="board">
   <app-score></app-score>
-  <app-bricks [isGameStarted]="isGameStarted"></app-bricks>
+  <app-bricks [isGameStarted]="startFlag"></app-bricks>
 
   <app-ball
     *ngFor="let ball of balls"
@@ -9,7 +9,20 @@
     (destroyBall)="removeBall($event)"
   ></app-ball>
 
-  <app-paddle [isGameStarted]="isGameStarted"></app-paddle>
+  <app-paddle [isGameStarted]="startFlag && !pauseFlag"></app-paddle>
+  <app-menu *ngIf="!startFlag">
+    <app-start-game-content
+      (startGame)="startingTheGame($event)"
+    ></app-start-game-content>
+  </app-menu>
+  <app-menu *ngIf="pauseFlag && startFlag">
+    <app-pause-game-content
+      (pauseGame)="stopPauseGame($event)"
+    ></app-pause-game-content>
+  </app-menu>
+  <app-menu *ngIf="gameOverFlag">
+    <app-game-over-content></app-game-over-content>
+  </app-menu>
 </div>
 
 <!--  -->

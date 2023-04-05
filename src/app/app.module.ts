@@ -16,6 +16,12 @@ import { DropBonusComponent } from './components/drop-bonus/drop-bonus.component
 import { bricksReducer } from './store/bricks/bricks.reducer';
 import { ScoreComponent } from './components/score/score.component';
 import { ColorChangeDirective } from './custom-directives/change-color.directive';
+import { MenuComponent } from './components/menu/menu/menu.component';
+import { StartGameContentComponent } from './components/menu/start-game-content/start-game-content.component';
+import { PauseGameContentComponent } from './components/menu/pause-game-content/pause-game-content.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { GameOverContentComponent } from './components/menu/game-over-content/game-over-content.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +33,10 @@ import { ColorChangeDirective } from './custom-directives/change-color.directive
     DropBonusComponent,
     ScoreComponent,
     ColorChangeDirective,
+    MenuComponent,
+    StartGameContentComponent,
+    PauseGameContentComponent,
+    GameOverContentComponent,
   ],
   imports: [
     BrowserModule,
@@ -40,6 +50,8 @@ import { ColorChangeDirective } from './custom-directives/change-color.directive
     StoreDevtoolsModule.instrument({
       maxAge: 25,
     }),
+    BrowserAnimationsModule,
+    FontAwesomeModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

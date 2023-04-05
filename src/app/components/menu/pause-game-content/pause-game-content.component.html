@@ -1,0 +1,18 @@
+<div class="pause-game-menu">
+  <div class="btn-container" *ngIf="!aboutFlag">
+    <button class="btn" (click)="handlePauseClick()">Restart</button>
+    <button class="btn" (click)="handleAboutClick()">About</button>
+  </div>
+
+  <div class="about" *ngIf="aboutFlag">
+    <div class="title">About Arkanoid</div>
+    <p>
+      Lorem ipsum, dolor sit amet consectetur adipisicing elit. Obcaecati enim
+      modi praesentium ab a eos cum ipsam tempora. Eveniet consequuntur nostrum
+      illo inventore corporis, magni sint accusamus libero excepturi officiis.
+    </p>
+    <button class="back-btn" (click)="handleBackClick()">
+      <fa-icon [icon]="faArrowLeftLong"></fa-icon>
+    </button>
+  </div>
+</div>

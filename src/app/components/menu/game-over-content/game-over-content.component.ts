@@ -6,6 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-game-over-content',
@@ -16,16 +17,21 @@ export class GameOverContentComponent implements OnInit, OnChanges {
   @Output() restartGame = new EventEmitter();
   faArrowLeftLong = faArrowLeftLong;
   list_top_scorers = [];
+  current_user_id: string;
 
-  pauseFlag: boolean = false;
   aboutFlag: boolean = false;
 
+  constructor(private userService: UserService) {}
+
   ngOnInit(): void {
+    this.current_user_id = this.userService.getUser().id;
+
     this.list_top_scorers = JSON.parse(
       localStorage.getItem('top_scorers')
     ).sort((a, b) => b.score - a.score);
 
-    console.log('Top_Scorer: ', this.list_top_scorers);
+    console.log('Id: ', this.current_user_id);
+    console.log('Top Scorers: ', this.list_top_scorers);
   }
 
   ngOnChanges(): void {}

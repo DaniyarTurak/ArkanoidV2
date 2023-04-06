@@ -6,6 +6,7 @@ import { IBrick } from './types/IBrick';
 import { Subscription } from 'rxjs';
 import { UserService } from './services/user.service';
 import { BallService } from './services/ball.service';
+import { BricksService } from './services/bricks.service';
 
 enum GameEnded {
   YouWon = 'You Won!',
@@ -29,7 +30,8 @@ export class AppComponent implements OnInit {
     private store: Store,
     private el: ElementRef,
     private userService: UserService,
-    private ballService: BallService
+    private ballService: BallService,
+    private bricksService: BricksService
   ) {}
 
   ngOnInit(): void {}
@@ -88,13 +90,20 @@ export class AppComponent implements OnInit {
       .getBoundingClientRect();
     const board = Board.Instance;
     board.setValues(boardWidth, boardHeight);
+    console.log(startFlag);
   }
 
   restartGame(): void {
+    this.balls = [];
     this.balls = [{ id: 1 }];
     this.pauseFlag = false;
     this.startFlag = false;
     this.gameOverFlag = false;
     this.ballMoveFlag = false;
+    this.bricksService.restartBricks();
+  }
+
+  closeMenu(): void {
+    this.pauseFlag = false;
   }
 }

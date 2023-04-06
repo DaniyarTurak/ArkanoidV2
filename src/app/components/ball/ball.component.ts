@@ -32,8 +32,8 @@ enum BallSpeed {
 })
 export class BallComponent implements OnChanges, OnInit {
   @Input() id!: number;
-  @Input() startFlag: boolean = false;
-  @Input() pauseFlag: boolean = false;
+  @Input() startFlag: boolean;
+  @Input() pauseFlag: boolean;
   @Output() destroyBall = new EventEmitter();
 
   dx: number = BallSpeed.generalSpeed;
@@ -97,7 +97,7 @@ export class BallComponent implements OnChanges, OnInit {
   }
 
   moveBall(): void {
-    if (!this.startFlag && !this.pauseFlag) {
+    if (!this.startFlag || this.pauseFlag) {
       return;
     }
     this.ballX += this.dx;
@@ -119,7 +119,7 @@ export class BallComponent implements OnChanges, OnInit {
     if (ball.bottom >= board.height) {
       this.removeBall();
     } else {
-      if (ball.right + ballRadius / 2 >= board.width || ball.left <= 0) {
+      if (ball.right + ballRadius >= board.width || ball.left <= 0) {
         this.dx = -this.dx;
       }
       if (ball.top <= 0) {
@@ -270,8 +270,8 @@ export class BallComponent implements OnChanges, OnInit {
       if (
         ball.bottom >= brick.top &&
         ball.top <= brick.bottom &&
-        ball.left - ball.width >= brick.left &&
-        ball.right + ball.width <= brick.right &&
+        ball.left - ball.width / 2 >= brick.left &&
+        ball.right + ball.width / 2 <= brick.right &&
         status
       ) {
         this.bricksService.destroyBrick(id, mode);
@@ -282,8 +282,8 @@ export class BallComponent implements OnChanges, OnInit {
       } else if (
         ball.bottom >= brick.top &&
         ball.top <= brick.bottom &&
-        ball.left + ball.width <= brick.right &&
-        ball.right - ball.width >= brick.left &&
+        ball.left + ball.width / 2 <= brick.right &&
+        ball.right - ball.width / 2 >= brick.left &&
         status
       ) {
         this.bricksService.destroyBrick(id, mode);

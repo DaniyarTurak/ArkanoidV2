@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeftLong, faClose } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-pause-game-content',
@@ -8,9 +8,10 @@ import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
 })
 export class PauseGameContentComponent {
   @Output() restartGame = new EventEmitter();
+  @Output() closePauseMenu = new EventEmitter();
   faArrowLeftLong = faArrowLeftLong;
+  faClose = faClose;
 
-  pauseFlag: boolean = false;
   aboutFlag: boolean = false;
 
   handleRestartClick(): void {
@@ -19,10 +20,13 @@ export class PauseGameContentComponent {
 
   handleAboutClick(): void {
     this.aboutFlag = true;
-    this.aboutFlag = true;
   }
 
   handleBackClick(): void {
     this.aboutFlag = false;
+  }
+
+  handleClose(): void {
+    this.closePauseMenu.emit();
   }
 }

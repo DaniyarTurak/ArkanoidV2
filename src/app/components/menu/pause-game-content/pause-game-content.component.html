@@ -1,4 +1,7 @@
 <div class="pause-game-menu">
+  <button class="close-btn" (click)="handleClose()">
+    <fa-icon [icon]="faClose"></fa-icon>
+  </button>
   <div class="btn-container" *ngIf="!aboutFlag">
     <button class="btn" (click)="handleRestartClick()">Restart</button>
     <button class="btn" (click)="handleAboutClick()">About</button>

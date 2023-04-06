@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { deleteBrick } from '../store/bricks/bricks.actions';
 import { BallMode } from '../types/IPaddle';
+import { backUpBricks } from '../constants/Bricks';
 
 @Injectable({
   providedIn: 'root',
@@ -176,5 +177,9 @@ export class BricksService {
       this.bricks[objIndex] = { ...this.bricks[objIndex], status: false };
       this.store.dispatch(deleteBrick({ id }));
     }
+  }
+
+  restartBricks() {
+    this.bricks = [...backUpBricks];
   }
 }

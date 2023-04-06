@@ -1,9 +1,21 @@
 <div class="game-over-menu">
   <div class="top-scorers">
-    Top scorers:
-
-    <ul *ngFor="let scorer of list_top_scorers; let i = index">
-      <li>{{ i + 1 }}. {{ scorer.name }} {{ scorer.score }}</li>
+    <ul>
+      <li>
+        <div>№</div>
+        <div>Name</div>
+        <div>Score</div>
+      </li>
+      <li
+        *ngFor="let scorer of list_top_scorers; let i = index"
+        [ngClass]="{
+          'current-user': scorer.id === current_user_id
+        }"
+      >
+        <div>{{ i + 1 }}.</div>
+        <div>{{ scorer.name }}</div>
+        <div>{{ scorer.score }}</div>
+      </li>
     </ul>
   </div>
   <div class="btn-container" *ngIf="!aboutFlag">

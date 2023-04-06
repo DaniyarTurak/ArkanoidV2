@@ -15,16 +15,20 @@
     [pauseFlag]="pauseFlag"
     [ballMoveFlag]="ballMoveFlag"
   ></app-paddle>
+
   <app-menu *ngIf="!startFlag">
     <app-start-game-content
       (startGame)="startingTheGame($event)"
     ></app-start-game-content>
   </app-menu>
+
   <app-menu *ngIf="pauseFlag && startFlag">
     <app-pause-game-content
       (restartGame)="restartGame()"
+      (closePauseMenu)="closeMenu()"
     ></app-pause-game-content>
   </app-menu>
+
   <app-menu *ngIf="gameOverFlag">
     <app-game-over-content
       (restartGame)="restartGame()"

@@ -16,17 +16,17 @@ import { BricksService } from 'src/app/services/bricks.service';
   styleUrls: ['./bricks.component.scss'],
 })
 export class BricksComponent implements OnInit, OnChanges {
-  @Input() isGameStarted: boolean = false;
+  @Input() isGameStarted: boolean;
   bricks = [];
   _subscription = new Subscription();
 
   constructor(private bricksService: BricksService, private el: ElementRef) {}
 
-  ngOnInit(): void {
-    this._subscription = this.bricksService.getBricks().subscribe((bricks) => {
+  ngOnInit(): void {}
+
+  ngOnChanges(): void {
+    this.bricksService.getBricks().subscribe((bricks) => {
       this.bricks = bricks;
     });
   }
-
-  ngOnChanges(): void {}
 }

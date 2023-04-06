@@ -90,7 +90,6 @@ export class AppComponent implements OnInit {
       .getBoundingClientRect();
     const board = Board.Instance;
     board.setValues(boardWidth, boardHeight);
-    console.log(startFlag);
   }
 
   restartGame(): void {

@@ -140,120 +140,107 @@ export class BallComponent implements OnChanges, OnInit {
 
     const { paddle, mode, direction } = this.paddle;
 
-    if (mode === BallMode.Speed) {
-      this.dx = this.dx * 5; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
-      this.dy = this.dy * 5; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
-      this.speedMode = true;
-      setTimeout(() => {
-        this.dx = this.dx * 1.5;
-        //this.dx > 0 ? BallSpeed.generalSpeed : -BallSpeed.generalSpeed;
-        this.dy = this.dy * 1.5;
-        //this.dy > 0 ? BallSpeed.generalSpeed : -BallSpeed.generalSpeed;
+    // if (mode === BallMode.Speed) {
+    //   this.dx = this.dx * 5; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
+    //   this.dy = this.dy * 5; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
+    //   this.speedMode = true;
+    //   setTimeout(() => {
+    //     this.dx = this.dx * 1.5;
+    //     //this.dx > 0 ? BallSpeed.generalSpeed : -BallSpeed.generalSpeed;
+    //     this.dy = this.dy * 1.5;
+    //     //this.dy > 0 ? BallSpeed.generalSpeed : -BallSpeed.generalSpeed;
 
-        this.speedMode = false;
-        this.store.dispatch(setModeBall({ mode: BallMode.Default }));
-      }, 100);
-    } else if (mode === BallMode.Power) {
-      this.powerMode = true;
-      setTimeout(() => {
-        this.powerMode = false;
-        this.store.dispatch(setModeBall({ mode: BallMode.Default }));
-      }, 2000);
-    }
+    //     this.speedMode = false;
+    //     this.store.dispatch(setModeBall({ mode: BallMode.Default }));
+    //   }, 100);
+    // } else if (mode === BallMode.Power) {
+    //   this.powerMode = true;
+    //   setTimeout(() => {
+    //     this.powerMode = false;
+    //     this.store.dispatch(setModeBall({ mode: BallMode.Default }));
+    //   }, 2000);
+    // }
 
     if (
       ball.left >= paddle.left &&
       ball.right <= paddle.right &&
       ball.bottom >= paddle.top
     ) {
-      let ballHitPosition = ball.left + ball.width / 2 - paddle.left;
-      let ballHitPositionPercent = ballHitPosition / paddle.width;
+      // let ballHitPosition = ball.left + ball.width / 2 - paddle.left;
+      // let ballHitPositionPercent = ballHitPosition / paddle.width;
 
-      let paddleDirection = direction;
-      let generalSpeed = BallSpeed.generalSpeed;
-      let speedBoosted = BallSpeed.speedBoosted;
+      // let paddleDirection = direction;
+      // let generalSpeed = BallSpeed.generalSpeed;
+      // let speedBoosted = BallSpeed.speedBoosted;
 
-      let dx, dy;
+      // let dx, dy;
 
-      if (paddleDirection * this.dx > 0) {
-        if (ballHitPositionPercent >= 0.45 && ballHitPositionPercent <= 0.55) {
-          dy = -generalSpeed;
-        } else if (ballHitPositionPercent > 0.55) {
-          dx = paddleDirection > 0 ? speedBoosted : -generalSpeed;
-          dy = -generalSpeed + (speedBoosted / generalSpeed) * paddleDirection;
-        } else {
-          dx = paddleDirection > 0 ? generalSpeed : -speedBoosted;
-          dy = -generalSpeed - (speedBoosted / generalSpeed) * paddleDirection;
-        }
-      } else {
-        if (ballHitPositionPercent >= 0.45 && ballHitPositionPercent <= 0.55) {
-          dy = -generalSpeed;
-          dx = generalSpeed * paddleDirection;
-        } else if (ballHitPositionPercent > 0.55) {
-          dx = paddleDirection > 0 ? speedBoosted : -generalSpeed;
-          dy = -generalSpeed + (speedBoosted / generalSpeed) * paddleDirection;
-        } else {
-          dx = paddleDirection > 0 ? generalSpeed : -speedBoosted;
-          dy = -generalSpeed - (speedBoosted / generalSpeed) * paddleDirection;
-        }
-      }
-
-      this.dx = dx;
-      this.dy = dy;
-
-      // let ballHitPosition = ball.left + ball.width / 2 - this.paddle.left;
-      // let hitPercentage = ballHitPosition / this.paddle.width;
-
-      // let sameDirection =
-      //   (this.paddle.direction > 0 && this.dx > 0) ||
-      //   (this.paddle.direction < 0 && this.dx < 0);
-
-      // if (sameDirection) {
-      //   if (hitPercentage >= 0.45 && hitPercentage <= 0.55) {
-      //     this.dy = -BallSpeed.generalSpeed;
-      //   } else if (hitPercentage > 0.55) {
-      //     this.dx =
-      //       this.paddle.direction > 0
-      //         ? BallSpeed.speedBoosted
-      //         : -BallSpeed.generalSpeed;
-      //     this.dy =
-      //       -BallSpeed.generalSpeed +
-      //       (BallSpeed.speedBoosted / BallSpeed.generalSpeed) *
-      //         this.paddle.direction;
+      // if (paddleDirection * this.dx > 0) {
+      //   if (ballHitPositionPercent >= 0.35 && ballHitPositionPercent <= 0.65) {
+      //     dy = -generalSpeed;
+      //   } else if (ballHitPositionPercent > 0.65) {
+      //     dx = paddleDirection > 0 ? speedBoosted : -generalSpeed;
+      //     dy = -generalSpeed + (speedBoosted / generalSpeed) * paddleDirection;
       //   } else {
-      //     this.dx =
-      //       this.paddle.direction > 0
-      //         ? BallSpeed.generalSpeed
-      //         : -BallSpeed.speedBoosted;
-      //     this.dy =
-      //       -BallSpeed.generalSpeed -
-      //       (BallSpeed.speedBoosted / BallSpeed.generalSpeed) *
-      //         this.paddle.direction;
+      //     dx = paddleDirection > 0 ? generalSpeed : -speedBoosted;
+      //     dy = -generalSpeed - (speedBoosted / generalSpeed) * paddleDirection;
       //   }
       // } else {
-      //   if (hitPercentage >= 0.45 && hitPercentage <= 0.55) {
-      //     this.dy = -BallSpeed.generalSpeed;
-      //     this.dx = BallSpeed.generalSpeed * this.paddle.direction;
-      //   } else if (hitPercentage > 0.55) {
-      //     this.dx =
-      //       this.paddle.direction > 0
-      //         ? BallSpeed.speedBoosted
-      //         : -BallSpeed.generalSpeed;
-      //     this.dy =
-      //       -BallSpeed.generalSpeed +
-      //       (BallSpeed.speedBoosted / BallSpeed.generalSpeed) *
-      //         this.paddle.direction;
+      //   if (ballHitPositionPercent >= 0.35 && ballHitPositionPercent <= 0.65) {
+      //     dy = -generalSpeed;
+      //     dx = generalSpeed * paddleDirection;
+      //   } else if (ballHitPositionPercent > 0.65) {
+      //     dx = paddleDirection > 0 ? speedBoosted : -generalSpeed;
+      //     dy = -generalSpeed + (speedBoosted / generalSpeed) * paddleDirection;
       //   } else {
-      //     this.dx =
-      //       this.paddle.direction > 0
-      //         ? BallSpeed.generalSpeed
-      //         : -BallSpeed.speedBoosted;
-      //     this.dy =
-      //       -BallSpeed.generalSpeed -
-      //       (BallSpeed.speedBoosted / BallSpeed.generalSpeed) *
-      //         this.paddle.direction;
+      //     dx = paddleDirection > 0 ? generalSpeed : -speedBoosted;
+      //     dy = -generalSpeed - (speedBoosted / generalSpeed) * paddleDirection;
       //   }
       // }
+
+      // this.dx = dx;
+      // this.dy = dy;
+
+      let ballHitPosition = ball.left + ball.width / 2 - paddle.left;
+      let hitPercentage = ballHitPosition / paddle.width;
+
+      let sameDirection =
+        (direction > 0 && this.dx > 0) || (direction < 0 && this.dx < 0);
+
+      if (sameDirection) {
+        if (hitPercentage >= 0.45 && hitPercentage <= 0.55) {
+          this.dy = -BallSpeed.generalSpeed;
+        } else if (hitPercentage > 0.55) {
+          this.dx =
+            direction > 0 ? BallSpeed.speedBoosted : -BallSpeed.generalSpeed;
+          this.dy =
+            -BallSpeed.generalSpeed +
+            (BallSpeed.speedBoosted / BallSpeed.generalSpeed) * direction;
+        } else {
+          this.dx =
+            direction > 0 ? BallSpeed.generalSpeed : -BallSpeed.speedBoosted;
+          this.dy =
+            -BallSpeed.generalSpeed -
+            (BallSpeed.speedBoosted / BallSpeed.generalSpeed) * direction;
+        }
+      } else {
+        if (hitPercentage >= 0.45 && hitPercentage <= 0.55) {
+          this.dy = -BallSpeed.generalSpeed;
+          this.dx = BallSpeed.generalSpeed * direction;
+        } else if (hitPercentage > 0.55) {
+          this.dx =
+            direction > 0 ? BallSpeed.speedBoosted : -BallSpeed.generalSpeed;
+          this.dy =
+            -BallSpeed.generalSpeed +
+            (BallSpeed.speedBoosted / BallSpeed.generalSpeed) * direction;
+        } else {
+          this.dx =
+            direction > 0 ? BallSpeed.generalSpeed : -BallSpeed.speedBoosted;
+          this.dy =
+            -BallSpeed.generalSpeed -
+            (BallSpeed.speedBoosted / BallSpeed.generalSpeed) * direction;
+        }
+      }
     } else if (
       ball.bottom >= paddle.top &&
       ball.left < paddle.right &&
@@ -266,7 +253,7 @@ export class BallComponent implements OnChanges, OnInit {
 
   ballBricksCollusion(ball: DOMRect): void {
     this.bricks.forEach(({ id, brick, status }) => {
-      const { paddle, mode, direction } = this.paddle;
+      const { mode } = this.paddle;
       if (
         ball.bottom >= brick.top &&
         ball.top <= brick.bottom &&
@@ -279,9 +266,10 @@ export class BallComponent implements OnChanges, OnInit {
           return;
         }
         this.dy = -this.dy;
+        this.ballY += this.dy;
       } else if (
-        ball.bottom >= brick.top &&
-        ball.top <= brick.bottom &&
+        ball.bottom - ball.width / 2 >= brick.top &&
+        ball.top + ball.width / 2 <= brick.bottom &&
         ball.left + ball.width / 2 <= brick.right &&
         ball.right - ball.width / 2 >= brick.left &&
         status
@@ -291,6 +279,7 @@ export class BallComponent implements OnChanges, OnInit {
           return;
         }
         this.dx = -this.dx;
+        this.ballX += this.dx;
       }
 
       // if (

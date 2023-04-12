@@ -41,8 +41,6 @@ export class BrickComponent implements OnInit {
           status: this.brick.status,
         })
       );
-
-      console.log('B', this.el.nativeElement.getBoundingClientRect());
     }
 
     // this.brickService.setBricks(

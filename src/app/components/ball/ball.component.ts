@@ -125,7 +125,7 @@ export class BallComponent implements OnChanges, OnInit {
       if (ball.right + ballRadius >= board.width || ball.left <= 0) {
         this.dx = -this.dx;
       }
-      if (ball.top <= 0) {
+      if (ball.top - ballRadius < 0) {
         this.dy = -this.dy;
       }
 
@@ -140,13 +140,13 @@ export class BallComponent implements OnChanges, OnInit {
     const { paddle, mode, direction } = this.paddle;
 
     if (mode === BallMode.Speed) {
-      this.dx = this.dx * 1.05; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
-      this.dy = this.dy * 1.05; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
+      this.dx = this.dx * 1.25; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
+      this.dy = this.dy * 1.25; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
       this.speedMode = true;
       setTimeout(() => {
         this.speedMode = false;
         this.store.dispatch(setModeBall({ mode: BallMode.Default }));
-      }, 100);
+      }, 200);
     }
 
     if (mode === BallMode.Power) {
@@ -154,7 +154,7 @@ export class BallComponent implements OnChanges, OnInit {
       setTimeout(() => {
         this.powerMode = false;
         this.store.dispatch(setModeBall({ mode: BallMode.Default }));
-      }, 300);
+      }, 1000);
     }
 
     if (
@@ -225,22 +225,23 @@ export class BallComponent implements OnChanges, OnInit {
           this.dx = BallSpeed.generalSpeed * direction;
         } else if (hitPercentage > 0.55) {
           this.dx =
-            direction > 0 ? BallSpeed.speedBoosted : -BallSpeed.generalSpeed;
+            direction > 0 ? -BallSpeed.speedBoosted : -BallSpeed.generalSpeed;
           this.dy =
             -BallSpeed.generalSpeed +
             (BallSpeed.speedBoosted / BallSpeed.generalSpeed) * direction;
         } else {
           this.dx =
             direction > 0 ? BallSpeed.generalSpeed : -BallSpeed.speedBoosted;
-          this.dy =
-            -BallSpeed.generalSpeed -
-            (BallSpeed.speedBoosted / BallSpeed.generalSpeed) * direction;
+          this.dy = -BallSpeed.generalSpeed;
+          // this.dy =
+          //   -BallSpeed.generalSpeed -
+          //   (BallSpeed.speedBoosted / BallSpeed.generalSpeed) * direction;
         }
       }
     } else if (
       ball.bottom >= paddle.top &&
-      ball.left < paddle.right &&
-      ball.right > paddle.left
+      ball.left - ball.width / 2 < paddle.right &&
+      ball.right + ball.width / 2 > paddle.left
     ) {
       this.dy = -this.dy;
       this.dx = -this.dx;
@@ -253,16 +254,18 @@ export class BallComponent implements OnChanges, OnInit {
       if (
         ball.bottom >= brick.top &&
         ball.top <= brick.bottom &&
-        ball.left - ball.width / 2 >= brick.left &&
-        ball.right + ball.width / 2 <= brick.right &&
+        ball.left >= brick.left &&
+        ball.right <= brick.right &&
         status
       ) {
+        console.log('TopBottom: ', ball, brick);
         this.bricksService.destroyBrick(id, mode);
         if (mode === BallMode.Power) {
           return;
         }
         this.dy = -this.dy;
         this.ballY += this.dy;
+        return;
       } else if (
         ball.bottom - ball.width / 2 >= brick.top &&
         ball.top + ball.width / 2 <= brick.bottom &&
@@ -270,12 +273,14 @@ export class BallComponent implements OnChanges, OnInit {
         ball.right - ball.width / 2 >= brick.left &&
         status
       ) {
+        console.log('LEftRight: ', ball, brick);
         this.bricksService.destroyBrick(id, mode);
         if (mode === BallMode.Power) {
           return;
         }
         this.dx = -this.dx;
-        this.ballX += 2 * this.dx;
+        this.ballX += this.dx;
+        return;
       }
 
       // if (

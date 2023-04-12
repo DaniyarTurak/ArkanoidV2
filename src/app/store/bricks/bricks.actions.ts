@@ -14,3 +14,8 @@ export const bonusDropped = createAction(
   '[Bricks Coordinates] Bonus Dropped',
   props<{ id: number; bonusName: string }>()
 );
+
+export const removeBrick = createAction(
+  '[Bricks Coordinates] Remove Brick',
+  props<{ id: number }>()
+);

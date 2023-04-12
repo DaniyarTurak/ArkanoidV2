@@ -22,10 +22,10 @@ export class StartGameContentComponent {
 
   handleStartClick(): void {
     let id = Date.now().toString();
-    let userName = this.el.nativeElement.querySelector('#userName').value;
-    if (userName.trim().length === 0) {
-      userName = 'User' + id;
-    }
+    //let userName = this.el.nativeElement.querySelector('#userName').value;
+    //if (userName.trim().length === 0) {
+    let userName = 'User' + id;
+    // }
 
     this.userService.setInitialUser(userName, id);
 

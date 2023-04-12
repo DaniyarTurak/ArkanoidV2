@@ -11,7 +11,10 @@ import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { BricksService } from 'src/app/services/bricks.service';
 import { selectBalls } from 'src/app/store/ball/ball.selectors';
-import { setBrickCoordinates } from 'src/app/store/bricks/bricks.actions';
+import {
+  removeBrick,
+  setBrickCoordinates,
+} from 'src/app/store/bricks/bricks.actions';
 import { IBall } from 'src/app/types/IBall';
 
 @Component({
@@ -38,6 +41,8 @@ export class BrickComponent implements OnInit {
           status: this.brick.status,
         })
       );
+
+      console.log('B', this.el.nativeElement.getBoundingClientRect());
     }
 
     // this.brickService.setBricks(

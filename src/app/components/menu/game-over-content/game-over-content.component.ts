@@ -29,14 +29,12 @@ export class GameOverContentComponent implements OnInit, OnChanges {
     this.list_top_scorers = JSON.parse(
       localStorage.getItem('top_scorers')
     ).sort((a, b) => b.score - a.score);
-
-    console.log('Id: ', this.current_user_id);
-    console.log('Top Scorers: ', this.list_top_scorers);
   }
 
   ngOnChanges(): void {}
 
   handleRestartClick(): void {
+    console.log('Restart GameOver');
     this.restartGame.emit();
   }
 }

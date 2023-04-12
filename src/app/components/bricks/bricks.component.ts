@@ -25,8 +25,10 @@ export class BricksComponent implements OnInit, OnChanges {
   ngOnInit(): void {}
 
   ngOnChanges(): void {
-    this.bricksService.getBricks().subscribe((bricks) => {
-      this.bricks = bricks;
-    });
+    if (this.isGameStarted) {
+      this.bricksService.getBricks().subscribe((bricks) => {
+        this.bricks = bricks;
+      });
+    }
   }
 }

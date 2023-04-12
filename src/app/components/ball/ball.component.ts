@@ -42,7 +42,6 @@ export class BallComponent implements OnChanges, OnInit {
   ballY: number = 0;
   paddle: IPaddle = null;
   bricks: IBrick[] = [];
-  BallMode = BallMode;
   speedMode: boolean = false;
   powerMode: boolean = false;
 
@@ -83,7 +82,11 @@ export class BallComponent implements OnChanges, OnInit {
     }
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.store.select(selectPaddle).subscribe((res) => {
+      this.paddle = res;
+    });
+  }
 
   ngOnChanges(): void {
     const ball = this.el.nativeElement.querySelector('.ball');
@@ -134,32 +137,25 @@ export class BallComponent implements OnChanges, OnInit {
 
   //todo: change
   ballPaddleCollusion(ball: DOMRect): void {
-    this.store.select(selectPaddle).subscribe((res) => {
-      this.paddle = res;
-    });
-
     const { paddle, mode, direction } = this.paddle;
 
-    // if (mode === BallMode.Speed) {
-    //   this.dx = this.dx * 5; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
-    //   this.dy = this.dy * 5; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
-    //   this.speedMode = true;
-    //   setTimeout(() => {
-    //     this.dx = this.dx * 1.5;
-    //     //this.dx > 0 ? BallSpeed.generalSpeed : -BallSpeed.generalSpeed;
-    //     this.dy = this.dy * 1.5;
-    //     //this.dy > 0 ? BallSpeed.generalSpeed : -BallSpeed.generalSpeed;
+    if (mode === BallMode.Speed) {
+      this.dx = this.dx * 1.05; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
+      this.dy = this.dy * 1.05; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
+      this.speedMode = true;
+      setTimeout(() => {
+        this.speedMode = false;
+        this.store.dispatch(setModeBall({ mode: BallMode.Default }));
+      }, 100);
+    }
 
-    //     this.speedMode = false;
-    //     this.store.dispatch(setModeBall({ mode: BallMode.Default }));
-    //   }, 100);
-    // } else if (mode === BallMode.Power) {
-    //   this.powerMode = true;
-    //   setTimeout(() => {
-    //     this.powerMode = false;
-    //     this.store.dispatch(setModeBall({ mode: BallMode.Default }));
-    //   }, 2000);
-    // }
+    if (mode === BallMode.Power) {
+      this.powerMode = true;
+      setTimeout(() => {
+        this.powerMode = false;
+        this.store.dispatch(setModeBall({ mode: BallMode.Default }));
+      }, 300);
+    }
 
     if (
       ball.left >= paddle.left &&
@@ -279,7 +275,7 @@ export class BallComponent implements OnChanges, OnInit {
           return;
         }
         this.dx = -this.dx;
-        this.ballX += this.dx;
+        this.ballX += 2 * this.dx;
       }
 
       // if (

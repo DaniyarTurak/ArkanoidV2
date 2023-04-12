@@ -1,8 +1,6 @@
 import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { Board } from './constants/Board';
 import { Store } from '@ngrx/store';
-import { selectBricks } from './store/bricks/bricks.selectors';
-import { IBrick } from './types/IBrick';
 import { Subscription } from 'rxjs';
 import { UserService } from './services/user.service';
 import { BallService } from './services/ball.service';
@@ -34,20 +32,24 @@ export class AppComponent implements OnInit {
     private bricksService: BricksService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // this.store
+    //   .select(selectBricks)
+    //   .subscribe((bricks) => (this.bricks = bricks));
+  }
 
   @HostListener('document:keydown', ['$event'])
   startGame(e: KeyboardEvent): void {
     if (e.code === 'Enter') {
-      this._subscription = this.store
-        .select(selectBricks)
-        .subscribe((bricks) => {
-          if (
-            bricks.filter((brick: IBrick) => brick.status === true).length === 0
-          ) {
-            this.gameOver(GameEnded.YouWon);
-          }
-        });
+      // this._subscription = this.store
+      //   .select(selectBricks)
+      //   .subscribe((bricks) => {
+      //     if (
+      //       bricks.filter((brick: IBrick) => brick.status === true).length === 0
+      //     ) {
+      //       this.gameOver(GameEnded.YouWon);
+      //     }
+      //   });
 
       this.ballMoveFlag = true;
     } else if (e.code == 'KeyK') {
@@ -73,7 +75,7 @@ export class AppComponent implements OnInit {
       JSON.stringify(topScorers.slice(0, 10))
     );
 
-    this._subscription.unsubscribe();
+    //this._subscription.unsubscribe();
   }
 
   removeBall(id: number): void {
@@ -93,11 +95,11 @@ export class AppComponent implements OnInit {
   }
 
   restartGame(): void {
-    this.balls = [];
+    console.log('restart');
     this.balls = [{ id: 1 }];
     this.pauseFlag = false;
-    this.startFlag = false;
     this.gameOverFlag = false;
+    this.startFlag = false;
     this.ballMoveFlag = false;
     this.bricksService.restartBricks();
   }

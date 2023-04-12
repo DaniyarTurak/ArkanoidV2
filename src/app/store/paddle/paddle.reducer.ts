@@ -27,6 +27,7 @@ export const paddleReducer = createReducer(
     };
   }),
   on(setModeBall, (state, { mode }) => {
+    //console.log('Mode: ', mode);
     return {
       ...state,
       paddle: {

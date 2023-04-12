@@ -1,7 +1,7 @@
 import { IBrick } from '../types/IBrick';
 import { BallMode } from '../types/IPaddle';
 
-export const backUpBricks: IBrick[] = [
+export let backUpBricks: IBrick[] = [
   {
     id: 1,
     bonusName: BallMode.Default,

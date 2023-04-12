@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { deleteBrick } from '../store/bricks/bricks.actions';
 import { BallMode } from '../types/IPaddle';
 import { backUpBricks } from '../constants/Bricks';
+import { selectBricks } from '../store/bricks/bricks.selectors';
 
 @Injectable({
   providedIn: 'root',
@@ -160,6 +161,8 @@ export class BricksService {
     },
   ];
 
+  backUpBricks = [...this.bricks];
+
   constructor(private store: Store) {}
 
   // setBricks(id: number, bricks: DOMRect[]): void {}
@@ -180,6 +183,21 @@ export class BricksService {
   }
 
   restartBricks() {
-    this.bricks = [...backUpBricks];
+    //console.log('Funcsss');
+
+    // this.bricks = this.bricks.map((b) => {
+    //   return {
+    //     ...b,
+    //     status: true,
+    //     hitCount: 3,
+    //   };
+    // });
+    // console.log('Before: ', this.bricks);
+    this.bricks = [...this.backUpBricks];
+    //console.log('Curernt: ', this.bricks);
+    this.backUpBricks.forEach((b, idx) => {
+      this.bricks[idx].status = true;
+      this.bricks[idx].hitCount = 2;
+    });
   }
 }

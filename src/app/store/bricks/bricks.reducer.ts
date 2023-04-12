@@ -2,6 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import {
   bonusDropped,
   deleteBrick,
+  removeBrick,
   setBrickCoordinates,
 } from './bricks.actions';
 import { IBrick } from 'src/app/types/IBrick';

@@ -38,6 +38,7 @@ export class GameOverComponent implements OnInit {
     );
 
     this.current_user_id = this.userService.getUser().id;
+    console.log('Data: ', this.data);
   }
 
   handleRestartClick(): void {

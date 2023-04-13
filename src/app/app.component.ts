@@ -13,9 +13,11 @@ import {
   PauseResponse,
 } from './shared/modal-pop-up/pause-game/pause-game.component';
 import { GameOverComponent } from './shared/modal-pop-up/game-over/game-over.component';
+import { selectBricks } from './store/bricks/bricks.selectors';
+import { IBrick } from './types/IBrick';
 
 enum GameEnded {
-  YouWon = 'You Won!',
+  YouWon = 'Congratulations!',
   YouLost = 'Game Over!',
 }
 
@@ -59,15 +61,16 @@ export class AppComponent implements OnInit {
   @HostListener('document:keydown', ['$event'])
   handleKeyDown(e: KeyboardEvent): void {
     if (e.code === 'Enter') {
-      // this._subscription = this.store
-      //   .select(selectBricks)
-      //   .subscribe((bricks) => {
-      //     if (
-      //       bricks.filter((brick: IBrick) => brick.status === true).length === 0
-      //     ) {
-      //       this.gameOver(GameEnded.YouWon);
-      //     }
-      //   });
+      this._subscription = this.store
+        .select(selectBricks)
+        .subscribe((bricks) => {
+          if (
+            bricks.filter((brick: IBrick) => brick.status === true).length === 0
+          ) {
+            this.gameOver(GameEnded.YouWon);
+          }
+        });
+
       this.ballMoveFlag = true;
     } else if (e.code == 'KeyK') {
       this.balls.push({ id: this.balls[this.balls.length - 1].id + 1 });

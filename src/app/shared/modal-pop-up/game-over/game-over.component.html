@@ -1,5 +1,7 @@
 <div class="modal">
-  <h1 mat-dialog-title [ngStyle]="{ color: '#fff' }">Welcome to Arkanoid</h1>
+  <h1 mat-dialog-title [ngStyle]="{ color: '#FFC000', 'font-size': '36px' }">
+    {{ data.result }}
+  </h1>
   <div mat-dialog-content [ngStyle]="{ color: '#fff' }">
     <table mat-table [dataSource]="dataSource">
       <ng-container matColumnDef="position">

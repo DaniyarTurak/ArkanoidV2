@@ -1,0 +1,47 @@
+<div class="modal">
+  <h1 mat-dialog-title [ngStyle]="{ color: '#fff' }">Welcome to Arkanoid</h1>
+  <div mat-dialog-content [ngStyle]="{ color: '#fff' }">
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="position">
+        <th mat-header-cell *matHeaderCellDef>No.</th>
+        <td
+          [ngClass]="{ active: element.id === current_user_id }"
+          mat-cell
+          *matCellDef="let element; let i = index"
+        >
+          {{ i + 1 }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td
+          [ngClass]="{ active: element.id === current_user_id }"
+          mat-cell
+          *matCellDef="let element"
+        >
+          {{ element.name }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="score">
+        <th mat-header-cell *matHeaderCellDef>Score</th>
+        <td
+          [ngClass]="{ active: element.id === current_user_id }"
+          mat-cell
+          *matCellDef="let element"
+        >
+          {{ element.score }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+  <div class="btn-container" mat-dialog-actions>
+    <button mat-raised-button color="primary" (click)="handleRestartClick()">
+      Restart
+    </button>
+  </div>
+</div>

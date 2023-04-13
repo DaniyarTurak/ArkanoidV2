@@ -2,7 +2,10 @@ import { Injectable } from '@angular/core';
 import { IBrick } from '../types/IBrick';
 import { Observable, of } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { deleteBrick } from '../store/bricks/bricks.actions';
+import {
+  deleteBrick,
+  restartBricksCoordinates,
+} from '../store/bricks/bricks.actions';
 import { BallMode } from '../types/IPaddle';
 import { backUpBricks } from '../constants/Bricks';
 import { selectBricks } from '../store/bricks/bricks.selectors';
@@ -193,11 +196,13 @@ export class BricksService {
     //   };
     // });
     // console.log('Before: ', this.bricks);
-    this.bricks = [...this.backUpBricks];
+    //this.bricks = [...this.backUpBricks];
     //console.log('Curernt: ', this.bricks);
     this.backUpBricks.forEach((b, idx) => {
       this.bricks[idx].status = true;
       this.bricks[idx].hitCount = 2;
     });
+
+    this.store.dispatch(restartBricksCoordinates());
   }
 }

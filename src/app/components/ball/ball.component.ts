@@ -44,6 +44,7 @@ export class BallComponent implements OnChanges, OnInit {
   bricks: IBrick[] = [];
   speedMode: boolean = false;
   powerMode: boolean = false;
+  ballMoveFlag: boolean = false;
 
   constructor(
     private ballService: BallService,
@@ -56,6 +57,7 @@ export class BallComponent implements OnChanges, OnInit {
   @HostListener('document:keydown', ['$event'])
   handleBallEnter(e: KeyboardEvent) {
     if (e.code === 'Enter') {
+      this.ballMoveFlag = true;
       if (this.startFlag) {
         this.store.select(selectBricks).subscribe((bricks) => {
           this.bricks = bricks;
@@ -96,6 +98,10 @@ export class BallComponent implements OnChanges, OnInit {
       this.renderer.addClass(ball, 'center');
     } else {
       this.renderer.removeClass(ball, 'center');
+    }
+
+    if (!this.pauseFlag && this.startFlag && this.ballMoveFlag) {
+      this.moveBall();
     }
   }
 

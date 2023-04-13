@@ -22,6 +22,7 @@ import { PauseGameContentComponent } from './components/menu/pause-game-content/
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { GameOverContentComponent } from './components/menu/game-over-content/game-over-content.component';
+import { ModalPopUpModule } from './shared/modal-pop-up/modalPopUp.module';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { GameOverContentComponent } from './components/menu/game-over-content/ga
     }),
     BrowserAnimationsModule,
     FontAwesomeModule,
+    ModalPopUpModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

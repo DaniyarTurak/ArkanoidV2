@@ -1,0 +1,24 @@
+.modal {
+    width: 900px;
+    height: 80vh;
+
+    background-color: rgb(75, 70, 70);
+
+    table {
+        th,td {
+            color: #fff;
+        }
+    }
+
+    .btn-container {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    
+        button {
+            width: 100px;
+        }
+    }
+    
+}

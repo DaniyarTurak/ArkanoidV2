@@ -53,9 +53,6 @@ export class AppComponent implements OnInit {
     board.setValues(boardWidth, boardHeight);
 
     this.startGame();
-    // this.store
-    //   .select(selectBricks)
-    //   .subscribe((bricks) => (this.bricks = bricks));
   }
 
   @HostListener('document:keydown', ['$event'])
@@ -73,7 +70,9 @@ export class AppComponent implements OnInit {
 
       this.ballMoveFlag = true;
     } else if (e.code == 'KeyK') {
-      this.balls.push({ id: this.balls[this.balls.length - 1].id + 1 });
+      console.log('');
+
+      //this.balls.push({ id: this.balls[this.balls.length - 1].id + 1 });
     } else if (e.code === 'Escape' && this.startFlag) {
       const popup = this.matdialog.open(PauseGameComponent, {
         disableClose: true,

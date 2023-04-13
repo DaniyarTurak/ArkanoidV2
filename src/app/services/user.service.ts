@@ -9,6 +9,7 @@ export class UserService {
   constructor() {}
 
   setInitialUser(userName: string, id: string): void {
+    console.log('setInitialUser: ', userName);
     this.user = {
       id,
       name: userName,

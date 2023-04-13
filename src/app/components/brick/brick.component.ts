@@ -6,6 +6,7 @@ import {
   Input,
   Output,
   EventEmitter,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -21,12 +22,14 @@ import { IBall } from 'src/app/types/IBall';
 })
 export class BrickComponent implements OnInit {
   @Input() brick = null;
+  @Input() ballMoveFlag: boolean;
 
   constructor(
     private store: Store,
     private renderer: Renderer2,
     private el: ElementRef,
-    private brickService: BricksService
+    private brickService: BricksService,
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -36,8 +39,11 @@ export class BrickComponent implements OnInit {
           id: this.brick.id,
           brick: this.el.nativeElement.getBoundingClientRect(),
           status: this.brick.status,
+          hitCount: this.brick.hitCount,
+          bonusName: this.brick.bonusName,
         })
       );
     }
+    this.cd.detectChanges();
   }
 }

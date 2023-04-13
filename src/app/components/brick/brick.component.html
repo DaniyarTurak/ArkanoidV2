@@ -1,6 +1,6 @@
 <div
   class="brick"
-  [ngClass]="{ invisible: !brick.status }"
+  [ngClass]="{ invisible: brick.hitCount <= 1 }"
   [ccColorChange]="brick.hitCount"
 >
   <app-drop-bonus *ngIf="brick.bonusName" [brick]="brick"></app-drop-bonus>

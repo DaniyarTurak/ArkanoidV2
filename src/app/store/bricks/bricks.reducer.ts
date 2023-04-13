@@ -16,18 +16,25 @@ export const initialState: BricksCoordinateState = {
 
 export const bricksReducer = createReducer(
   initialState,
-  on(setBrickCoordinates, (state, { id, brick, status }) => {
-    return {
-      ...state,
-      bricks: [...state.bricks, { id, brick, status }],
-    };
-  }),
+  on(
+    setBrickCoordinates,
+    (state, { id, brick, status, hitCount, bonusName }) => {
+      return {
+        ...state,
+        bricks: [...state.bricks, { id, brick, status, hitCount, bonusName }],
+      };
+    }
+  ),
   on(deleteBrick, (state, { id }) => {
     return {
       ...state,
       bricks: state.bricks.map((b) => {
-        if (b.id === id) {
-          return { ...b, status: false };
+        if (b.id === id && b.status) {
+          const hitCount = b.hitCount - 1;
+          if (hitCount === 0) {
+            return { ...b, status: false };
+          }
+          return { ...b, hitCount };
         }
         return b;
       }),
@@ -40,6 +47,7 @@ export const bricksReducer = createReducer(
         return {
           ...b,
           status: true,
+          hitCount: 2,
         };
       }),
     };

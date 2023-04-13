@@ -7,7 +7,7 @@ import {
   restartBricksCoordinates,
 } from '../store/bricks/bricks.actions';
 import { BallMode } from '../types/IPaddle';
-import { backUpBricks } from '../constants/Bricks';
+import { backUpBricks } from '../constants/BackUps';
 import { selectBricks } from '../store/bricks/bricks.selectors';
 
 @Injectable({
@@ -62,7 +62,7 @@ export class BricksService {
       bonusName: BallMode.Power,
       brick: null,
       status: true,
-      hitCount: 3,
+      hitCount: 2,
     },
     {
       id: 8,
@@ -76,7 +76,7 @@ export class BricksService {
       bonusName: BallMode.Default,
       brick: null,
       status: true,
-      hitCount: 3,
+      hitCount: 2,
     },
     {
       id: 10,
@@ -90,7 +90,7 @@ export class BricksService {
       bonusName: BallMode.Default,
       brick: null,
       status: true,
-      hitCount: 3,
+      hitCount: 2,
     },
     {
       id: 12,
@@ -177,11 +177,11 @@ export class BricksService {
   destroyBrick(id: number, mode: BallMode = BallMode.Default): void {
     const objIndex = this.bricks.findIndex((obj) => obj.id === id);
     this.bricks[objIndex].hitCount -= 1;
+    this.store.dispatch(deleteBrick({ id }));
 
     if (this.bricks[objIndex].hitCount === 0 || mode === BallMode.Power) {
       this.bricks[objIndex].hitCount = 0;
       this.bricks[objIndex] = { ...this.bricks[objIndex], status: false };
-      this.store.dispatch(deleteBrick({ id }));
     }
   }
 
@@ -192,13 +192,13 @@ export class BricksService {
     //   return {
     //     ...b,
     //     status: true,
-    //     hitCount: 3,
+    //     hitCount: 2,
     //   };
     // });
     // console.log('Before: ', this.bricks);
     //this.bricks = [...this.backUpBricks];
     //console.log('Curernt: ', this.bricks);
-    this.backUpBricks.forEach((b, idx) => {
+    backUpBricks.forEach((b, idx) => {
       this.bricks[idx].status = true;
       this.bricks[idx].hitCount = 2;
     });

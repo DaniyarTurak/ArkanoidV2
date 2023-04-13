@@ -1,3 +1,4 @@
+import { ChangeDetectionStrategy } from '@angular/core';
 import {
   Component,
   OnInit,
@@ -16,6 +17,7 @@ import { setPaddleCoordinates } from 'src/app/store/paddle/paddle.actions';
   selector: 'app-paddle',
   templateUrl: './paddle.component.html',
   styleUrls: ['./paddle.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaddleComponent implements OnInit, OnChanges {
   @Input() startFlag!: boolean;

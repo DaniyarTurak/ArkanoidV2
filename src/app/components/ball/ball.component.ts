@@ -132,7 +132,7 @@ export class BallComponent implements OnChanges, OnInit {
       if (ball.right + ballRadius >= board.width || ball.left <= 0) {
         this.dx = -this.dx;
       }
-      if (ball.top - ballRadius < 0) {
+      if (ball.top < 0) {
         this.dy = -this.dy;
       }
 
@@ -147,8 +147,8 @@ export class BallComponent implements OnChanges, OnInit {
     const { paddle, mode, direction } = this.paddle;
 
     if (mode === BallMode.Speed) {
-      this.dx = this.dx * 1.25; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
-      this.dy = this.dy * 1.25; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
+      this.dx = this.dx * 1.15; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
+      this.dy = this.dy * 1.15; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
       this.speedMode = true;
       setTimeout(() => {
         this.speedMode = false;
@@ -271,7 +271,7 @@ export class BallComponent implements OnChanges, OnInit {
           return;
         }
         this.dy = -this.dy;
-        this.ballY += this.dy;
+        this.ballY += 1.5 * this.dy;
         return;
       } else if (
         ball.bottom - ball.width / 2 >= brick.top &&

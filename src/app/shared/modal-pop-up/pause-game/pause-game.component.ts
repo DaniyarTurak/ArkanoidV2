@@ -12,6 +12,7 @@ export enum PauseResponse {
   styleUrls: ['./pause-game.component.scss'],
 })
 export class PauseGameComponent implements OnInit {
+  today = new Date();
   constructor(private dialogRef: MatDialogRef<PauseGameComponent>) {}
 
   ngOnInit(): void {}

@@ -1,5 +1,5 @@
 <div class="bricks-container">
-  <div *ngFor="let brick of bricks">
+  <div *ngFor="let brick of bricks | sortList : 'hitCount'">
     <app-brick [brick]="brick"></app-brick>
   </div>
 </div>

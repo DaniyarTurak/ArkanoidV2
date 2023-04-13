@@ -62,7 +62,7 @@ export class BricksService {
       bonusName: BallMode.Power,
       brick: null,
       status: true,
-      hitCount: 2,
+      hitCount: 3,
     },
     {
       id: 8,
@@ -76,7 +76,7 @@ export class BricksService {
       bonusName: BallMode.Default,
       brick: null,
       status: true,
-      hitCount: 2,
+      hitCount: 3,
     },
     {
       id: 10,
@@ -90,7 +90,7 @@ export class BricksService {
       bonusName: BallMode.Default,
       brick: null,
       status: true,
-      hitCount: 2,
+      hitCount: 3,
     },
     {
       id: 12,

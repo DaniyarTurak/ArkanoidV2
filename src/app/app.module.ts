@@ -24,6 +24,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { GameOverContentComponent } from './components/menu/game-over-content/game-over-content.component';
 import { ModalPopUpModule } from './shared/modal-pop-up/modalPopUp.module';
 import { gameFlagsReducer } from './store/game/game.reducer';
+import { SortListPipe } from './pipes/sort-list.pipe';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { gameFlagsReducer } from './store/game/game.reducer';
     StartGameContentComponent,
     PauseGameContentComponent,
     GameOverContentComponent,
+    SortListPipe,
   ],
   imports: [
     BrowserModule,

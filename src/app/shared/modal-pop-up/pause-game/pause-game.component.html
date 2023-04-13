@@ -2,7 +2,9 @@
   <h1 mat-dialog-title [ngStyle]="{ color: '#fff', 'font-size': '36px' }">
     Pause
   </h1>
-  <div mat-dialog-content></div>
+  <div mat-dialog-content [ngStyle]="{ color: '#fff' }">
+    Today: {{ today | date }}
+  </div>
   <div class="btn-container" mat-dialog-actions>
     <button mat-raised-button color="warn" (click)="handleRestartClick()">
       Restart

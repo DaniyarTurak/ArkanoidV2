@@ -57,8 +57,9 @@ export class BallComponent implements OnChanges, OnInit {
   @HostListener('document:keydown', ['$event'])
   handleBallEnter(e: KeyboardEvent) {
     if (e.code === 'Enter') {
-      this.ballMoveFlag = true;
       if (this.startFlag) {
+        this.ballMoveFlag = true;
+
         this.store.select(selectBricks).subscribe((bricks) => {
           this.bricks = bricks;
         });
@@ -100,7 +101,7 @@ export class BallComponent implements OnChanges, OnInit {
       this.renderer.removeClass(ball, 'center');
     }
 
-    if (!this.pauseFlag && this.startFlag && this.ballMoveFlag) {
+    if (!this.pauseFlag && this.ballMoveFlag) {
       this.moveBall();
     }
   }
@@ -264,7 +265,7 @@ export class BallComponent implements OnChanges, OnInit {
         ball.right <= brick.right &&
         status
       ) {
-        console.log('TopBottom: ', ball, brick);
+        //  console.log('TopBottom: ', ball, brick);
         this.bricksService.destroyBrick(id, mode);
         if (mode === BallMode.Power) {
           return;
@@ -279,7 +280,7 @@ export class BallComponent implements OnChanges, OnInit {
         ball.right - ball.width / 2 >= brick.left &&
         status
       ) {
-        console.log('LEftRight: ', ball, brick);
+        //  console.log('LEftRight: ', ball, brick);
         this.bricksService.destroyBrick(id, mode);
         if (mode === BallMode.Power) {
           return;
@@ -288,70 +289,6 @@ export class BallComponent implements OnChanges, OnInit {
         this.ballX += this.dx;
         return;
       }
-
-      // if (
-      //   ball.right >= brick.left &&
-      //   ball.left <= brick.right &&
-      //   ball.bottom >= brick.top &&
-      //   ball.top <= brick.bottom &&
-      //   status
-      // ) {
-      //   console.log('Top Bottom');
-      //   console.log(`BallTop: ${ball.top}, BallBottom: ${ball.bottom}`);
-      //   console.log(`BrickTop: ${brick.top}, BrickBottom: ${brick.bottom}`);
-      //   console.log(`BallLeft: ${ball.left}, BallRight: ${ball.right}`);
-      //   console.log(`BrickLeft: ${brick.left}, BrickRight: ${brick.right}`);
-      // }
-
-      // if (
-      //   ball.right >= brick.left &&
-      //   ball.left <= brick.right &&
-      //   ball.bottom >= brick.top &&
-      //   ball.top <= brick.bottom &&
-      //   status
-      // ) {
-      //   this.bricksService.destroyBrick(id, this.paddle.mode);
-
-      //   if (this.paddle.mode === BallMode.Power) {
-      //     return;
-      //   }
-
-      //   const ballCenterX = ball.left + ball.width / 2;
-      //   const ballCenterY = ball.top + ball.height / 2;
-      //   const brickCenterX = brick.left + brick.width / 2;
-      //   const brickCenterY = brick.top + brick.height / 2;
-
-      //   const dx = ballCenterX - brickCenterX;
-      //   const dy = ballCenterY - brickCenterY;
-      //   const width = (ball.width + brick.width) / 2;
-      //   const height = (ball.height + brick.height) / 2;
-      //   const crossWidth = width * dy;
-      //   const crossHeight = height * dx;
-      //   let collisionSide = null;
-
-      //   if (Math.abs(dx) <= width && Math.abs(dy) <= height) {
-      //     if (crossWidth > crossHeight) {
-      //       collisionSide = crossWidth > -crossHeight ? 'bottom' : 'left';
-      //     } else {
-      //       collisionSide = crossWidth > -crossHeight ? 'right' : 'top';
-      //     }
-      //   }
-
-      //   switch (collisionSide) {
-      //     case 'bottom':
-      //       this.dy = -this.dy;
-      //       break;
-      //     case 'top':
-      //       this.dy = -this.dy;
-      //       break;
-      //     case 'left':
-      //       this.dx = -this.dx;
-      //       break;
-      //     case 'right':
-      //       this.dx = -this.dx;
-      //       break;
-      //   }
-      // }
     });
   }
 

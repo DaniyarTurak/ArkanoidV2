@@ -2,6 +2,7 @@ import {
   Component,
   OnInit,
   ElementRef,
+  ChangeDetectionStrategy,
   Output,
   EventEmitter,
   Input,
@@ -9,6 +10,8 @@ import {
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { BricksService } from 'src/app/services/bricks.service';
+import { Store } from '@ngrx/store';
+import { selectBricks } from 'src/app/store/bricks/bricks.selectors';
 
 @Component({
   selector: 'app-bricks',
@@ -20,7 +23,11 @@ export class BricksComponent implements OnInit, OnChanges {
   bricks = [];
   _subscription = new Subscription();
 
-  constructor(private bricksService: BricksService, private el: ElementRef) {}
+  constructor(
+    private bricksService: BricksService,
+    private el: ElementRef,
+    private store: Store
+  ) {}
 
   ngOnInit(): void {}
 

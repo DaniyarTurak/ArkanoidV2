@@ -23,6 +23,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { GameOverContentComponent } from './components/menu/game-over-content/game-over-content.component';
 import { ModalPopUpModule } from './shared/modal-pop-up/modalPopUp.module';
+import { gameFlagsReducer } from './store/game/game.reducer';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { ModalPopUpModule } from './shared/modal-pop-up/modalPopUp.module';
       paddle: paddleReducer,
       ball: ballReducer,
       bricks: bricksReducer,
+      gameFlags: gameFlagsReducer,
     }),
     StoreDevtoolsModule.instrument({
       maxAge: 25,

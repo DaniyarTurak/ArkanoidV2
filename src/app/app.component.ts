@@ -68,7 +68,6 @@ export class AppComponent implements OnInit {
       //       this.gameOver(GameEnded.YouWon);
       //     }
       //   });
-
       this.ballMoveFlag = true;
     } else if (e.code == 'KeyK') {
       this.balls.push({ id: this.balls[this.balls.length - 1].id + 1 });

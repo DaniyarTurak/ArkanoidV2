@@ -40,9 +40,12 @@ export class BricksComponent implements OnInit, OnChanges {
       this.bricks$ = this.bricksService
         .getBricks()
         .pipe(map((bricks) => bricks.filter((b) => b.status)));
+      this.cd.detectChanges();
       // this.bricksService.getBricks().subscribe((bricks) => {
       //   this.cd.detectChanges();
       // });
+    } else {
+      this.bricks$ = null;
     }
 
     this.store.select(selectBricks).subscribe((bricks) => {

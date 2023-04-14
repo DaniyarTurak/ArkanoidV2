@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { Board } from './constants/Board';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { Subscription, map } from 'rxjs';
 import { UserService } from './services/user.service';
 import { BallService } from './services/ball.service';
 import { BricksService } from './services/bricks.service';
@@ -71,7 +71,7 @@ export class AppComponent implements OnInit {
           if (
             bricks.filter((brick: IBrick) => brick.status === true).length === 0
           ) {
-            this.gameOver(GameEnded.YouWon);
+            if (this.startFlag) this.gameOver(GameEnded.YouWon);
           }
         });
 

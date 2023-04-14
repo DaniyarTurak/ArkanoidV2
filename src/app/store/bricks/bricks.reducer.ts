@@ -19,6 +19,7 @@ export const bricksReducer = createReducer(
   on(
     setBrickCoordinates,
     (state, { id, brick, status, hitCount, bonusName }) => {
+      console.log('Set: ', state.bricks);
       return {
         ...state,
         bricks: [...state.bricks, { id, brick, status, hitCount, bonusName }],
@@ -41,15 +42,10 @@ export const bricksReducer = createReducer(
     };
   }),
   on(restartBricksCoordinates, (state) => {
+    const temp = [];
     return {
       ...state,
-      bricks: state.bricks.map((b) => {
-        return {
-          ...b,
-          status: true,
-          hitCount: 2,
-        };
-      }),
+      bricks: temp,
     };
   })
 );

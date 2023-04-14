@@ -60,10 +60,6 @@ export class BallComponent implements OnChanges, OnInit {
       if (this.startFlag) {
         this.ballMoveFlag = true;
 
-        this.store.select(selectBricks).subscribe((bricks) => {
-          this.bricks = bricks;
-        });
-
         const { x: ballX, y: ballY } = this.el.nativeElement
           .querySelector('.ball')
           .getBoundingClientRect();
@@ -88,6 +84,10 @@ export class BallComponent implements OnChanges, OnInit {
   ngOnInit(): void {
     this.store.select(selectPaddle).subscribe((res) => {
       this.paddle = res;
+    });
+    this.store.select(selectBricks).subscribe((bricks) => {
+      this.bricks = bricks;
+      console.log('Bricks: ', this.bricks);
     });
   }
 

@@ -37,6 +37,11 @@ export class BrickComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     if (this.brick.status) {
+      console.log('Id: ', this.brick.id);
+      console.log(
+        'Coordinated: ',
+        this.el.nativeElement.getBoundingClientRect()
+      );
       this.store.dispatch(
         setBrickCoordinates({
           id: this.brick.id,

@@ -9,10 +9,11 @@ import {
   OnChanges,
   ChangeDetectorRef,
 } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, map } from 'rxjs';
 import { BricksService } from 'src/app/services/bricks.service';
 import { Store } from '@ngrx/store';
 import { selectBricks } from 'src/app/store/bricks/bricks.selectors';
+import { setBrickCoordinates } from 'src/app/store/bricks/bricks.actions';
 
 @Component({
   selector: 'app-bricks',
@@ -22,7 +23,7 @@ import { selectBricks } from 'src/app/store/bricks/bricks.selectors';
 })
 export class BricksComponent implements OnInit, OnChanges {
   @Input() isGameStarted: boolean;
-  bricks = [];
+  bricks$ = null;
   _subscription = new Subscription();
 
   constructor(
@@ -36,9 +37,12 @@ export class BricksComponent implements OnInit, OnChanges {
 
   ngOnChanges(): void {
     if (this.isGameStarted) {
-      this.bricksService.getBricks().subscribe((bricks) => {
-        this.bricks = bricks;
-      });
+      this.bricks$ = this.bricksService
+        .getBricks()
+        .pipe(map((bricks) => bricks.filter((b) => b.status)));
+      // this.bricksService.getBricks().subscribe((bricks) => {
+      //   this.cd.detectChanges();
+      // });
     }
 
     this.store.select(selectBricks).subscribe((bricks) => {

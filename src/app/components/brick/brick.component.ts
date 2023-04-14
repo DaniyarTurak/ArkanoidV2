@@ -7,6 +7,8 @@ import {
   Output,
   EventEmitter,
   ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  OnChanges,
 } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -20,7 +22,8 @@ import { IBall } from 'src/app/types/IBall';
   templateUrl: './brick.component.html',
   styleUrls: ['./brick.component.scss'],
 })
-export class BrickComponent implements OnInit {
+export class BrickComponent implements OnInit, OnChanges {
+  @Input() isGameStarted: boolean;
   @Input() brick = null;
   @Input() ballMoveFlag: boolean;
 
@@ -44,6 +47,22 @@ export class BrickComponent implements OnInit {
         })
       );
     }
-    this.cd.detectChanges();
+    //this.cd.detectChanges();
+  }
+
+  ngOnChanges(): void {
+    if (this.isGameStarted) {
+      //console.log('Changes');
+    }
+
+    //this.cd.detectChanges();
+  }
+
+  ngDoCheck(): void {
+    if (this.brick.bonusName) {
+      if (this.brick.hitCount <= 0) {
+        this.cd.detectChanges();
+      }
+    }
   }
 }

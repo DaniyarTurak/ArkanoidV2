@@ -1,3 +1,6 @@
-<div class="drop-bonus" [ngClass]="{ 'drop-bonus--active': !brick.status }">
+<div
+  class="drop-bonus"
+  [ngClass]="{ 'drop-bonus--active': brickHitCount === 0 }"
+>
   {{ brick.bonusName }}
 </div>

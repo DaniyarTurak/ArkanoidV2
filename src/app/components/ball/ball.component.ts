@@ -147,8 +147,8 @@ export class BallComponent implements OnChanges, OnInit {
     const { paddle, mode, direction } = this.paddle;
 
     if (mode === BallMode.Speed) {
-      this.dx = this.dx * 1.15; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
-      this.dy = this.dy * 1.15; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
+      this.dx = this.dx * 1.05; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
+      this.dy = this.dy * 1.05; //? BallSpeed.speedBoosted : -BallSpeed.speedBoosted;
       this.speedMode = true;
       setTimeout(() => {
         this.speedMode = false;

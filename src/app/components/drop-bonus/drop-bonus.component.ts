@@ -7,6 +7,7 @@ import {
   ElementRef,
   EventEmitter,
   Renderer2,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { Board } from 'src/app/constants/Board';
 import { IBrick } from 'src/app/types/IBrick';
@@ -15,13 +16,16 @@ import { selectPaddle } from 'src/app/store/paddle/paddle.selectors';
 import { Subscription } from 'rxjs';
 import { BallMode, IPaddle } from 'src/app/types/IPaddle';
 import { setModeBall } from 'src/app/store/paddle/paddle.actions';
+import { selectBricks } from 'src/app/store/bricks/bricks.selectors';
 
 @Component({
   selector: 'app-drop-bonus',
   templateUrl: './drop-bonus.component.html',
   styleUrls: ['./drop-bonus.component.scss'],
 })
-export class DropBonusComponent implements OnInit {
+export class DropBonusComponent implements OnInit, OnChanges {
+  @Input() isGameStarted: boolean;
+  @Input() brickHitCount: number;
   @Input() brick!: IBrick;
   @Output() bonusConnected = new EventEmitter();
   progressY: number = 1;
@@ -32,15 +36,19 @@ export class DropBonusComponent implements OnInit {
   constructor(
     private store: Store,
     private renderer: Renderer2,
-    private el: ElementRef
+    private el: ElementRef,
+    private cd: ChangeDetectorRef
   ) {}
 
-  ngOnInit(): void {
-    if (!this.brick.status) {
+  ngOnInit(): void {}
+
+  ngOnChanges(): void {
+    if (this.brickHitCount <= 0) {
       this._subscription = this.store
         .select(selectPaddle)
         .subscribe((paddle) => (this.paddle = paddle));
       this.dropBonus();
+      console.log('Dropping');
     }
   }
 

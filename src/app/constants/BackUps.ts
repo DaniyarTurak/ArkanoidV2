@@ -39,7 +39,7 @@ export const backUpBricks: IBrick[] = [
   },
   {
     id: 6,
-    bonusName: BallMode.Power,
+    bonusName: BallMode.Default,
     brick: null,
     status: true,
     hitCount: 2,
@@ -88,7 +88,7 @@ export const backUpBricks: IBrick[] = [
   },
   {
     id: 13,
-    bonusName: BallMode.Power,
+    bonusName: BallMode.Speed,
     brick: null,
     status: true,
     hitCount: 2,

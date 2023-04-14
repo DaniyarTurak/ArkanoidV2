@@ -1,4 +1,10 @@
-import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  OnInit,
+} from '@angular/core';
 import { Board } from './constants/Board';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -40,7 +46,8 @@ export class AppComponent implements OnInit {
     private userService: UserService,
     private ballService: BallService,
     private bricksService: BricksService,
-    private matdialog: MatDialog
+    private matdialog: MatDialog,
+    private cd: ChangeDetectorRef
   ) {}
 
   openPopUp(): void {}
@@ -140,6 +147,7 @@ export class AppComponent implements OnInit {
     this.ballMoveFlag = false;
     this.bricksService.restartBricks();
     this.startGame();
+    this.cd.detectChanges();
   }
 
   closeMenu(): void {

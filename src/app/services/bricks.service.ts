@@ -52,7 +52,7 @@ export class BricksService {
     },
     {
       id: 6,
-      bonusName: BallMode.Power,
+      bonusName: BallMode.Default,
       brick: null,
       status: true,
       hitCount: 2,
@@ -101,7 +101,7 @@ export class BricksService {
     },
     {
       id: 13,
-      bonusName: BallMode.Power,
+      bonusName: BallMode.Speed,
       brick: null,
       status: true,
       hitCount: 2,
@@ -200,7 +200,7 @@ export class BricksService {
     //console.log('Curernt: ', this.bricks);
     backUpBricks.forEach((b, idx) => {
       this.bricks[idx].status = true;
-      this.bricks[idx].hitCount = 2;
+      this.bricks[idx].hitCount = b.hitCount;
     });
 
     this.store.dispatch(restartBricksCoordinates());

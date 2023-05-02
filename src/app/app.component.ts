@@ -21,6 +21,14 @@ import {
 import { GameOverComponent } from './shared/modal-pop-up/game-over/game-over.component';
 import { selectBricks } from './store/bricks/bricks.selectors';
 import { IBrick } from './types/IBrick';
+import { selectGameFlags } from './store/game/game.selectors';
+import {
+  restartFlags,
+  setBallMoveFlag,
+  setGameOverFlag,
+  setPauseFlag,
+  setStartFlag,
+} from './store/game/game.actions';
 
 enum GameEnded {
   YouWon = 'Congratulations!',
@@ -59,6 +67,15 @@ export class AppComponent implements OnInit {
     const board = Board.Instance;
     board.setValues(boardWidth, boardHeight);
 
+    this.store.select(selectGameFlags).subscribe((gameFlags) => {
+      this.startFlag = gameFlags.startFlag;
+      this.pauseFlag = gameFlags.pauseFlag;
+      this.gameOverFlag = gameFlags.gameOverFlag;
+      this.ballMoveFlag = gameFlags.ballMoveFlag;
+
+      //console.log('Start Flag: ', gameFlags.startFlag);
+    });
+
     this.startGame();
   }
 
@@ -75,36 +92,41 @@ export class AppComponent implements OnInit {
           }
         });
 
-      this.ballMoveFlag = true;
-    } else if (e.code == 'KeyK') {
-      console.log('');
-
-      //this.balls.push({ id: this.balls[this.balls.length - 1].id + 1 });
+      //this.ballMoveFlag = true;
+      this.store.dispatch(setBallMoveFlag({ res: true }));
+    } else if (e.code == 'Space') {
+      this.balls.push({ id: this.balls[this.balls.length - 1].id + 1 });
     } else if (e.code === 'Escape' && this.startFlag) {
       const popup = this.matdialog.open(PauseGameComponent, {
         disableClose: true,
       });
 
       popup.afterOpened().subscribe(() => {
-        this.pauseFlag = true;
+        //this.pauseFlag = true;
+        this.store.dispatch(setPauseFlag({ res: true }));
       });
 
       popup.afterClosed().subscribe((mes) => {
-        this.pauseFlag = false;
+        //this.pauseFlag = false;
+
+        this.store.dispatch(setPauseFlag({ res: false }));
 
         if (mes === PauseResponse.Restart) this.restartGame();
 
-        console.log('StartFlag: ', this.startFlag);
-        console.log('BallMove: ', this.ballMoveFlag);
-        console.log('PauseFlag: ', this.pauseFlag);
+        //console.log('StartFlag: ', this.startFlag);
+        //console.log('BallMove: ', this.ballMoveFlag);
+        //console.log('PauseFlag: ', this.pauseFlag);
       });
     }
   }
 
   gameOver(text: GameEnded) {
     //alert(text);
-    this.startFlag = false;
-    this.gameOverFlag = true;
+    //this.startFlag = false;
+    //this.gameOverFlag = true;
+
+    this.store.dispatch(setStartFlag({ res: false }));
+    this.store.dispatch(setGameOverFlag({ res: true }));
 
     const popup = this.matdialog.open(GameOverComponent, {
       disableClose: true,
@@ -135,22 +157,27 @@ export class AppComponent implements OnInit {
     });
 
     popup.afterClosed().subscribe(() => {
-      this.startFlag = true;
+      //this.startFlag = true;
+      this.store.dispatch(setStartFlag({ res: true }));
     });
   }
 
   restartGame(): void {
     this.balls = [{ id: 1 }];
-    this.pauseFlag = false;
-    this.gameOverFlag = false;
-    this.startFlag = false;
-    this.ballMoveFlag = false;
+
+    this.store.dispatch(restartFlags());
+    // this.pauseFlag = false;
+    // this.gameOverFlag = false;
+    // this.startFlag = false;
+    // this.ballMoveFlag = false;
+
     this.bricksService.restartBricks();
     this.startGame();
     this.cd.detectChanges();
   }
 
   closeMenu(): void {
-    this.pauseFlag = false;
+    //this.pauseFlag = false;
+    this.store.dispatch(setPauseFlag({ res: false }));
   }
 }

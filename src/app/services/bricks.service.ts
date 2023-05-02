@@ -186,7 +186,7 @@ export class BricksService {
   }
 
   restartBricks() {
-    //console.log('Funcsss');
+    ////console.log('Funcsss');
 
     // this.bricks = this.bricks.map((b) => {
     //   return {
@@ -195,13 +195,22 @@ export class BricksService {
     //     hitCount: 2,
     //   };
     // });
-    // console.log('Before: ', this.bricks);
+    // //console.log('Before: ', this.bricks);
     //this.bricks = [...this.backUpBricks];
-    //console.log('Curernt: ', this.bricks);
-    backUpBricks.forEach((b, idx) => {
-      this.bricks[idx].status = true;
-      this.bricks[idx].hitCount = b.hitCount;
+    ////console.log('Curernt: ', this.bricks);
+
+    this.bricks = this.bricks.map((b) => {
+      return {
+        ...b,
+        status: true,
+        hitCount: 2,
+      };
     });
+
+    // backUpBricks.forEach((b, idx) => {
+    //   this.bricks[idx].status = true;
+    //   this.bricks[idx].hitCount = b.hitCount;
+    // });
 
     this.store.dispatch(restartBricksCoordinates());
   }

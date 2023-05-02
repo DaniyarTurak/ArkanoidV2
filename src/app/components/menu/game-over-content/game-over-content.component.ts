@@ -34,7 +34,7 @@ export class GameOverContentComponent implements OnInit, OnChanges {
   ngOnChanges(): void {}
 
   handleRestartClick(): void {
-    console.log('Restart GameOver');
+    //console.log('Restart GameOver');
     this.restartGame.emit();
   }
 }

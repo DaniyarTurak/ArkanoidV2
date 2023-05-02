@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Board } from 'src/app/constants/Board';
+import { selectGameFlags } from 'src/app/store/game/game.selectors';
 import { setPaddleCoordinates } from 'src/app/store/paddle/paddle.actions';
 
 @Component({
@@ -20,9 +21,9 @@ import { setPaddleCoordinates } from 'src/app/store/paddle/paddle.actions';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaddleComponent implements OnInit, OnChanges {
-  @Input() startFlag!: boolean;
-  @Input() pauseFlag!: boolean;
-  @Input() ballMoveFlag!: boolean;
+  startFlag: boolean;
+  pauseFlag: boolean;
+  ballMoveFlag: boolean;
 
   direction: number = 0;
 
@@ -32,19 +33,25 @@ export class PaddleComponent implements OnInit, OnChanges {
     private store: Store
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.store.select(selectGameFlags).subscribe((gameFlags) => {
+      this.startFlag = gameFlags.startFlag;
+      this.pauseFlag = gameFlags.pauseFlag;
+      this.ballMoveFlag = gameFlags.ballMoveFlag;
 
-  ngOnChanges(): void {
-    const paddle = this.el.nativeElement.querySelector('.paddle');
+      const paddle = this.el.nativeElement.querySelector('.paddle');
 
-    if (!this.startFlag) {
-      this.renderer.setStyle(paddle, 'transform', `translateX(-50%)`);
-      this.renderer.addClass(paddle, 'center');
-    } else {
-      this.renderer.removeClass(paddle, 'center');
-      //   this.renderer.removeClass(ball, 'center');
-    }
+      if (!this.startFlag) {
+        this.renderer.setStyle(paddle, 'transform', `translateX(-50%)`);
+        this.renderer.addClass(paddle, 'center');
+      } else {
+        this.renderer.removeClass(paddle, 'center');
+        //this.renderer.removeClass(ball, 'center');
+      }
+    });
   }
+
+  ngOnChanges(): void {}
 
   @HostListener('document:keydown', ['$event'])
   handleKeyDown(e: KeyboardEvent): void {

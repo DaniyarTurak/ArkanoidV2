@@ -19,10 +19,11 @@ import { IBrick } from 'src/app/types/IBrick';
 import { selectBricks } from 'src/app/store/bricks/bricks.selectors';
 import { Board } from 'src/app/constants/Board';
 import { setModeBall } from 'src/app/store/paddle/paddle.actions';
+import { selectGameFlags } from 'src/app/store/game/game.selectors';
 
 enum BallSpeed {
-  generalSpeed = 5,
-  speedBoosted = 10,
+  generalSpeed = 3,
+  speedBoosted = 5,
 }
 
 @Component({
@@ -32,8 +33,11 @@ enum BallSpeed {
 })
 export class BallComponent implements OnChanges, OnInit {
   @Input() id!: number;
-  @Input() startFlag: boolean;
-  @Input() pauseFlag: boolean;
+  //@Input() startFlag: boolean;
+  //@Input() pauseFlag: boolean;
+  startFlag: boolean;
+  pauseFlag: boolean;
+
   @Output() destroyBall = new EventEmitter();
 
   dx: number = BallSpeed.generalSpeed;
@@ -59,7 +63,26 @@ export class BallComponent implements OnChanges, OnInit {
     if (e.code === 'Enter') {
       if (this.startFlag) {
         this.ballMoveFlag = true;
+      }
+    }
+  }
 
+  ngOnInit(): void {
+    this.store.select(selectPaddle).subscribe((res) => {
+      this.paddle = res;
+    });
+    this.store.select(selectBricks).subscribe((bricks) => {
+      this.bricks = bricks;
+      //console.log('Bricks: ', this.bricks);
+    });
+    this.store.select(selectGameFlags).subscribe((gameFlags) => {
+      const ball = this.el.nativeElement.querySelector('.ball');
+
+      this.startFlag = gameFlags.startFlag;
+      this.pauseFlag = gameFlags.pauseFlag;
+      this.ballMoveFlag = gameFlags.ballMoveFlag;
+
+      if (this.startFlag && this.ballMoveFlag) {
         const { x: ballX, y: ballY } = this.el.nativeElement
           .querySelector('.ball')
           .getBoundingClientRect();
@@ -78,33 +101,21 @@ export class BallComponent implements OnChanges, OnInit {
 
         this.moveBall();
       }
-    }
-  }
 
-  ngOnInit(): void {
-    this.store.select(selectPaddle).subscribe((res) => {
-      this.paddle = res;
+      if (!this.startFlag) {
+        this.renderer.setStyle(ball, 'transform', `translateX(-50%)`);
+        this.renderer.addClass(ball, 'center');
+      } else {
+        this.renderer.removeClass(ball, 'center');
+      }
+
+      if (!this.pauseFlag && this.ballMoveFlag) {
+        this.moveBall();
+      }
     });
-    this.store.select(selectBricks).subscribe((bricks) => {
-      this.bricks = bricks;
-      console.log('Bricks: ', this.bricks);
-    });
   }
 
-  ngOnChanges(): void {
-    const ball = this.el.nativeElement.querySelector('.ball');
-
-    if (!this.startFlag) {
-      this.renderer.setStyle(ball, 'transform', `translateX(-50%)`);
-      this.renderer.addClass(ball, 'center');
-    } else {
-      this.renderer.removeClass(ball, 'center');
-    }
-
-    if (!this.pauseFlag && this.ballMoveFlag) {
-      this.moveBall();
-    }
-  }
+  ngOnChanges(): void {}
 
   moveBall(): void {
     if (!this.startFlag || this.pauseFlag) {
@@ -265,7 +276,7 @@ export class BallComponent implements OnChanges, OnInit {
         ball.right <= brick.right &&
         status
       ) {
-        //  console.log('TopBottom: ', ball, brick);
+        //  //console.log('TopBottom: ', ball, brick);
         this.bricksService.destroyBrick(id, mode);
         if (mode === BallMode.Power) {
           return;
@@ -280,7 +291,7 @@ export class BallComponent implements OnChanges, OnInit {
         ball.right - ball.width / 2 >= brick.left &&
         status
       ) {
-        //  console.log('LEftRight: ', ball, brick);
+        //  //console.log('LEftRight: ', ball, brick);
         this.bricksService.destroyBrick(id, mode);
         if (mode === BallMode.Power) {
           return;

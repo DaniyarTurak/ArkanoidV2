@@ -15,7 +15,7 @@ export class PauseGameContentComponent {
   aboutFlag: boolean = false;
 
   handleRestartClick(): void {
-    console.log('Restart Pause');
+    //console.log('Restart Pause');
     this.restartGame.emit();
   }
 

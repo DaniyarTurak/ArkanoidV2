@@ -48,7 +48,7 @@ export class DropBonusComponent implements OnInit, OnChanges {
         .select(selectPaddle)
         .subscribe((paddle) => (this.paddle = paddle));
       this.dropBonus();
-      console.log('Dropping');
+      //console.log('Dropping');
     }
   }
 

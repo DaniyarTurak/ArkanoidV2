@@ -179,29 +179,22 @@ export class BricksService {
     this.bricks[objIndex].hitCount -= 1;
     this.store.dispatch(deleteBrick({ id }));
 
-    if (this.bricks[objIndex].hitCount === 0 || mode === BallMode.Power) {
+    if (mode === BallMode.Power) {
       this.bricks[objIndex].hitCount = 0;
+    }
+
+    if (this.bricks[objIndex].hitCount === 0 || mode === BallMode.Power) {
       this.bricks[objIndex] = { ...this.bricks[objIndex], status: false };
     }
   }
 
   restartBricks() {
-    //console.log('Funcsss');
-
-    // this.bricks = this.bricks.map((b) => {
-    //   return {
-    //     ...b,
-    //     status: true,
-    //     hitCount: 2,
-    //   };
+    // backUpBricks.forEach((b, idx) => {
+    //   this.bricks[idx].status = true;
+    //   this.bricks[idx].hitCount = b.hitCount;
     // });
-    // console.log('Before: ', this.bricks);
-    //this.bricks = [...this.backUpBricks];
-    //console.log('Curernt: ', this.bricks);
-    backUpBricks.forEach((b, idx) => {
-      this.bricks[idx].status = true;
-      this.bricks[idx].hitCount = b.hitCount;
-    });
+
+    this.bricks = [...backUpBricks];
 
     this.store.dispatch(restartBricksCoordinates());
   }

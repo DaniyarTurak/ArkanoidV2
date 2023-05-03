@@ -1,0 +1,28 @@
+@use 'src/app/custom-styles/variable';
+
+.ball {
+    width: 15px;
+    height: 15px;
+    border-radius: 25px;
+    background-color: #fff;
+    position: absolute;
+    bottom: 50px;
+    z-index: 10;
+}
+
+.speedMode {
+    background-color: blue;
+}
+
+.powerMode { 
+    background-color: red;
+}
+
+.removeAll {
+    left: 0%;
+}
+
+.center {
+    left: 50%;
+    transform: translateX(-50%);
+}

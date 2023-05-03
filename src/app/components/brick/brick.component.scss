@@ -1,0 +1,15 @@
+@use 'src/app/custom-styles/variable'; 
+
+.brick {
+    width: 80px;
+    height: 30px;
+    border-radius: 10px;
+    margin: 20px;
+    position: relative;
+    background: variable.$linear-gradiet;
+}
+
+.invisible {
+    background: none;
+    background-color: variable.$board-color;
+}

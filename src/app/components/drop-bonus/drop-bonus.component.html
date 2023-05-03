@@ -1,0 +1,10 @@
+<div
+  class="drop-bonus"
+  [ngClass]="{
+    'drop-bonus--active': brickHitCount === 0,
+    'speed-mode': brick.bonusName == BallMode.Speed && brickHitCount === 0,
+    'power-mode': brick.bonusName == BallMode.Power && brickHitCount === 0
+  }"
+>
+  {{ brick.bonusName }}
+</div>

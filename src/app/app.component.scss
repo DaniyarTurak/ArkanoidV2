@@ -1,0 +1,9 @@
+@use "src/app/custom-styles/variable";
+
+.board {
+    width: 100%;
+    height: 100vh;
+    margin: 0 auto;
+    background-color: variable.$board-color;
+    position: relative;
+}

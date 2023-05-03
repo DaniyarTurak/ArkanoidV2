@@ -1,0 +1,24 @@
+@use 'sass:math';
+@use 'src/app/custom-styles/variable';
+
+
+
+.paddle {
+    width: variable.$paddle-width;
+    border-radius: 10px;
+    height: 30px;
+    background: variable.$linear-gradiet;
+    background-color: gainsboro;
+    position: absolute;
+    bottom: 0;
+    //left: 50% - math.div($paddle-width, 2);
+}
+
+.removeAll {
+    left: 0%;
+}
+
+.center {
+    left: 50%;
+    transform: translateX(-50%);
+}

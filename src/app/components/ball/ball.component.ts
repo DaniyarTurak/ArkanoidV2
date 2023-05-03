@@ -59,7 +59,6 @@ export class BallComponent implements OnChanges, OnInit {
     if (e.code === 'Enter') {
       if (this.startFlag) {
         this.ballMoveFlag = true;
-
         const { x: ballX, y: ballY } = this.el.nativeElement
           .querySelector('.ball')
           .getBoundingClientRect();

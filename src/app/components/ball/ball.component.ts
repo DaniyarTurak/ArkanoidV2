@@ -130,7 +130,7 @@ export class BallComponent implements OnChanges, OnInit {
       if (ball.right + ballRadius >= board.width || ball.left <= 0) {
         this.dx = -this.dx;
       }
-      if (ball.top < 0) {
+      if (ball.top <= 0) {
         this.dy = -this.dy;
       }
 

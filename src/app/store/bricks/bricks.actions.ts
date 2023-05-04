@@ -14,7 +14,7 @@ export const setBrickCoordinates = createAction(
 
 export const deleteBrick = createAction(
   '[Bricks Coordinates] Delete Brick',
-  props<{ id: number }>()
+  props<{ id: number; hitCount: number }>()
 );
 
 export const restartBricksCoordinates = createAction(

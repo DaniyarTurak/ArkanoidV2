@@ -220,38 +220,58 @@ export class BallComponent implements OnChanges, OnInit {
 
   ballBricksCollusion(ball: DOMRect): void {
     this.bricks.forEach(({ id, brick, status }) => {
+      const ballRadius = ball.width / 2;
       const { mode } = this.paddle;
-      let ballRadius = ball.width / 2;
+
+      //ball not connected to bricks
       if (
-        ball.bottom >= brick.top &&
-        ball.top <= brick.bottom &&
-        ball.left >= brick.left &&
-        ball.right <= brick.right &&
-        status
+        ball.x + ballRadius < brick.x ||
+        ball.x - ballRadius > brick.x + brick.width ||
+        ball.y + ballRadius < brick.y ||
+        ball.y - ballRadius > brick.y + brick.height
       ) {
-        //  console.log('TopBottom: ', ball, brick);
+        return;
+      }
+
+      if (status) {
         this.bricksService.destroyBrick(id, mode);
         if (mode === BallMode.Power) {
           return;
         }
-        this.dy = -this.dy;
-        this.ballY += 1.5 * this.dy;
-        return;
-      } else if (
-        ball.bottom - ballRadius >= brick.top &&
-        ball.top + ballRadius <= brick.bottom &&
-        ball.left + ballRadius <= brick.right &&
-        ball.right - ballRadius >= brick.left &&
-        status
-      ) {
-        //  console.log('LEftRight: ', ball, brick);
-        this.bricksService.destroyBrick(id, mode);
-        if (mode === BallMode.Power) {
-          return;
+        const topCollision = Math.abs(ball.y + ballRadius - brick.y);
+        const bottomCollision = Math.abs(
+          ball.y - ballRadius - (brick.y + brick.height)
+        );
+        const leftCollision = Math.abs(ball.x + ballRadius - brick.x);
+        const rightCollision = Math.abs(
+          ball.x - ballRadius - (brick.x + brick.width)
+        );
+
+        if (
+          topCollision <= bottomCollision &&
+          topCollision <= leftCollision &&
+          topCollision <= rightCollision
+        ) {
+          // Handle top collision
+          this.dy = -this.dy;
+        } else if (
+          bottomCollision <= topCollision &&
+          bottomCollision <= leftCollision &&
+          bottomCollision <= rightCollision
+        ) {
+          // Handle bottom collision
+          this.dy = -this.dy;
+        } else if (
+          leftCollision <= topCollision &&
+          leftCollision <= bottomCollision &&
+          leftCollision <= rightCollision
+        ) {
+          // Handle left collision
+          this.dx = -this.dx;
+        } else {
+          // Handle right collision
+          this.dx = -this.dx;
         }
-        this.dx = -this.dx;
-        this.ballX += this.dx;
-        return;
       }
     });
   }

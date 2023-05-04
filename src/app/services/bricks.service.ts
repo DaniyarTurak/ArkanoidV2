@@ -177,14 +177,19 @@ export class BricksService {
   destroyBrick(id: number, mode: BallMode = BallMode.Default): void {
     const objIndex = this.bricks.findIndex((obj) => obj.id === id);
     this.bricks[objIndex].hitCount -= 1;
-    this.store.dispatch(deleteBrick({ id }));
+    this.store.dispatch(
+      deleteBrick({ id, hitCount: this.bricks[objIndex].hitCount })
+    );
 
     if (mode === BallMode.Power) {
       this.bricks[objIndex].hitCount = 0;
     }
 
-    if (this.bricks[objIndex].hitCount === 0 || mode === BallMode.Power) {
+    if (this.bricks[objIndex].hitCount === 0) {
       this.bricks[objIndex] = { ...this.bricks[objIndex], status: false };
+      this.store.dispatch(
+        deleteBrick({ id, hitCount: this.bricks[objIndex].hitCount })
+      );
     }
   }
 

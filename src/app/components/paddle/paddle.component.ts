@@ -32,7 +32,6 @@ export class PaddleComponent implements OnInit, OnChanges, AfterViewInit {
 
   direction: number = 0;
   board: any;
-  keyboardX: number = 0;
   paddleMoveX: number = 0;
   movementX: number = 1;
 
@@ -75,11 +74,13 @@ export class PaddleComponent implements OnInit, OnChanges, AfterViewInit {
     if (e.code === 'ArrowLeft') {
       if (this.paddleMoveX - this.paddleSize.width / 2 >= 0) {
         this.paddleMoveX += -30;
+        this.movementX = -1;
       }
       this.movePaddle();
     } else if (e.code === 'ArrowRight') {
       if (this.paddleMoveX <= this._WIDTH - this.paddleSize.width / 2) {
         this.paddleMoveX += 30;
+        this.movementX = 1;
       }
       this.movePaddle();
     }

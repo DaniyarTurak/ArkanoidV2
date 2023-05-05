@@ -1,0 +1,23 @@
+@use 'sass:math';
+@use 'src/app/custom-styles/variable';
+
+
+
+.paddle {
+    width: variable.$paddle-width;
+    border-radius: 5px;
+    height: 20px;
+    background: variable.$linear-gradiet;
+    background-color: gainsboro;
+    position: absolute;
+    bottom: 20px;
+}
+
+.removeAll {
+    left: 0;
+}
+
+.center {
+    left: 50%;
+    transform: translateX(-50%);
+}

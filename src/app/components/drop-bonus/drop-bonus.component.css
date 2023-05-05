@@ -1,0 +1,14 @@
+.drop-bonus {
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  z-index: 3;
+}
+
+.drop-bonus--active {
+  background-color: pink;
+}/*# sourceMappingURL=drop-bonus.component.css.map */

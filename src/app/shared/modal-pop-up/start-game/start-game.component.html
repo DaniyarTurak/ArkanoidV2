@@ -1,0 +1,38 @@
+<div class="modal">
+  <h1 mat-dialog-title [ngStyle]="{ color: '#fff', 'font-size': '36px' }">
+    Welcome to Arkanoid
+  </h1>
+  <div mat-dialog-content [ngStyle]="{ color: '#fff' }">
+    <div>Please press Start</div>
+    <!-- <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="position">
+          <th mat-header-cell *matHeaderCellDef>No.</th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            {{ i + 1 }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.name }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="score">
+          <th mat-header-cell *matHeaderCellDef>Score</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.score }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table> -->
+  </div>
+  <div class="btn-container" mat-dialog-actions>
+    <button mat-raised-button color="primary" (click)="handleStartClick()">
+      Start
+    </button>
+  </div>
+</div>

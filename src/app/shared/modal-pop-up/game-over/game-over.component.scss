@@ -1,0 +1,19 @@
+.modal {
+
+    table {
+        background-color: rgb(75, 70, 70);
+    }
+
+    .active {
+        background-color: green;
+    }
+
+  .mat-mdc-row {
+    height: 40px;
+  }
+
+  td, th {
+    text-align: center;
+    vertical-align: middle;
+  }
+}

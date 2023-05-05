@@ -1,0 +1,16 @@
+<div class="bricks-container">
+  <ng-container *ngFor="let brick of bricks$ | async">
+    <div class="brick-wrapper" [ngStyle]="{ position: 'relative' }">
+      <app-brick [isGameStarted]="isGameStarted" [brick]="brick"></app-brick>
+      <app-drop-bonus
+        *ngIf="brick.bonusName"
+        [isGameStarted]="isGameStarted"
+        [brick]="brick"
+        [brickHitCount]="brick.hitCount"
+      ></app-drop-bonus>
+    </div>
+  </ng-container>
+</div>
+
+<!-- [ngClass]="{ invisible: !brick.status }" -->
+<!-- | sortList : 'hitCount' -->

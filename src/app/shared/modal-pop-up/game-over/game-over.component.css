@@ -1,0 +1,6 @@
+.modal table {
+  background-color: rgb(75, 70, 70);
+}
+.modal .active {
+  background-color: green;
+}/*# sourceMappingURL=game-over.component.css.map */

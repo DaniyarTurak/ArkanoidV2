@@ -9,11 +9,11 @@ import {
 } from '@angular/core';
 import { Board } from './constants/Board';
 import { Store } from '@ngrx/store';
-import { Subscription, ReplaySubject } from 'rxjs';
+import { Subscription, ReplaySubject, interval } from 'rxjs';
 import { UserService } from './services/user.service';
 import { BallService } from './services/ball.service';
 import { BricksService } from './services/bricks.service';
-import { map, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { StartGameComponent } from './shared/modal-pop-up/start-game/start-game.component';
 import {
@@ -44,9 +44,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   gameOverFlag: boolean = false;
   ballMoveFlag: boolean = false;
 
-  resizeFlag: boolean = false;
-
   destroyed$ = new ReplaySubject(1);
+
+  resizeFlag: boolean = false;
 
   constructor(
     private store: Store,
@@ -57,8 +57,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     private matdialog: MatDialog,
     private cd: ChangeDetectorRef
   ) {}
-
-  openPopUp(): void {}
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {

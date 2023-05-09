@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
+  OnDestroy,
   ViewChild,
 } from '@angular/core';
 import {
@@ -15,6 +16,8 @@ import {
 import { Store } from '@ngrx/store';
 import { Board } from 'src/app/constants/Board';
 import { setPaddleCoordinates } from 'src/app/store/paddle/paddle.actions';
+import { interval, Observable, ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-paddle',
@@ -22,7 +25,9 @@ import { setPaddleCoordinates } from 'src/app/store/paddle/paddle.actions';
   styleUrls: ['./paddle.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PaddleComponent implements OnInit, OnChanges, AfterViewInit {
+export class PaddleComponent
+  implements OnInit, OnChanges, AfterViewInit, OnDestroy
+{
   @Input() startFlag!: boolean;
   @Input() pauseFlag!: boolean;
   @Input() ballMoveFlag!: boolean;
@@ -35,7 +40,13 @@ export class PaddleComponent implements OnInit, OnChanges, AfterViewInit {
   paddleMoveX: number = 0;
   movementX: number = 1;
 
+  ArrowLeftPressed: boolean;
+  ArrowRightPressed: boolean;
+
+  interval;
   _WIDTH: number;
+
+  destroyed$ = new ReplaySubject(1);
 
   get ball() {
     return this.el?.nativeElement?.parentElement.querySelector('.ball');
@@ -51,7 +62,13 @@ export class PaddleComponent implements OnInit, OnChanges, AfterViewInit {
     private store: Store
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.interval = interval(1000 / 60)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((time) => {
+        this.redraw();
+      });
+  }
 
   ngOnChanges(): void {
     if (!this.paddle) {
@@ -72,18 +89,18 @@ export class PaddleComponent implements OnInit, OnChanges, AfterViewInit {
   @HostListener('document:keydown', ['$event'])
   handleKeyDown(e: KeyboardEvent): void {
     if (e.code === 'ArrowLeft') {
-      if (this.paddleMoveX - this.paddleSize.width / 2 >= 0) {
-        this.paddleMoveX += -30;
-        this.movementX = -1;
-      }
-      this.movePaddle();
+      this.ArrowLeftPressed = true;
+      this.ArrowRightPressed = false;
     } else if (e.code === 'ArrowRight') {
-      if (this.paddleMoveX <= this._WIDTH - this.paddleSize.width / 2) {
-        this.paddleMoveX += 30;
-        this.movementX = 1;
-      }
-      this.movePaddle();
+      this.ArrowLeftPressed = false;
+      this.ArrowRightPressed = true;
     }
+  }
+
+  @HostListener('document:keyup', ['$event'])
+  handleKeyUp(e: KeyboardEvent): void {
+    this.ArrowLeftPressed = false;
+    this.ArrowRightPressed = false;
   }
 
   @HostListener('document:mousemove', ['$event'])
@@ -93,6 +110,24 @@ export class PaddleComponent implements OnInit, OnChanges, AfterViewInit {
 
     this.movementX = e.movementX;
     this.movePaddle();
+  }
+
+  redraw() {
+    if (this.ArrowLeftPressed) {
+      if (this.paddleMoveX - this.paddleSize.width / 2 >= 0) {
+        this.paddleMoveX += -10;
+        this.movementX = -1;
+      }
+      this.movePaddle();
+    }
+
+    if (this.ArrowRightPressed) {
+      if (this.paddleMoveX <= this._WIDTH - this.paddleSize.width / 2) {
+        this.paddleMoveX += 10;
+        this.movementX = 1;
+      }
+      this.movePaddle();
+    }
   }
 
   movePaddle(): void {
@@ -131,6 +166,11 @@ export class PaddleComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.board = Board.Instance;
-    this._WIDTH = this.board.width - 30;
+    this._WIDTH = this.board.width - 40;
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

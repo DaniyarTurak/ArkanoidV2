@@ -5,6 +5,7 @@ import {
   ChangeDetectionStrategy,
   Output,
   EventEmitter,
+  HostListener,
   Input,
   OnChanges,
   ChangeDetectorRef,
@@ -13,7 +14,10 @@ import { Subscription, map } from 'rxjs';
 import { BricksService } from 'src/app/services/bricks.service';
 import { Store } from '@ngrx/store';
 import { selectBricks } from 'src/app/store/bricks/bricks.selectors';
-import { setBrickCoordinates } from 'src/app/store/bricks/bricks.actions';
+import {
+  restartBricksCoordinates,
+  setBrickCoordinates,
+} from 'src/app/store/bricks/bricks.actions';
 
 @Component({
   selector: 'app-bricks',
@@ -32,6 +36,19 @@ export class BricksComponent implements OnInit, OnChanges {
     private store: Store,
     private cd: ChangeDetectorRef
   ) {}
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.bricks$ = null;
+
+    this.cd.detectChanges();
+    this.store.dispatch(restartBricksCoordinates());
+
+    this.bricks$ = this.bricksService
+      .getBricks()
+      .pipe(map((bricks) => bricks.filter((b) => b.status)));
+    this.cd.detectChanges();
+  }
 
   ngOnInit(): void {}
 

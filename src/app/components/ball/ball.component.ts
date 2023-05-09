@@ -122,9 +122,6 @@ export class BallComponent implements OnChanges, OnInit {
       .getBoundingClientRect();
 
     const board = Board.Instance;
-    const { width: boardWidth, height: boardHeight } =
-      this.el.nativeElement.parentNode.getBoundingClientRect();
-    board.setValues(boardWidth, boardHeight);
 
     let ballRadius = ball.width / 2;
 

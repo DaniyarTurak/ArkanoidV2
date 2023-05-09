@@ -3,16 +3,17 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  HostListener, OnDestroy,
+  HostListener,
+  OnDestroy,
   ViewChild,
 } from '@angular/core';
 import { Board } from './constants/Board';
 import { Store } from '@ngrx/store';
-import {Subscription, ReplaySubject} from 'rxjs';
+import { Subscription, ReplaySubject } from 'rxjs';
 import { UserService } from './services/user.service';
 import { BallService } from './services/ball.service';
 import { BricksService } from './services/bricks.service';
-import { takeUntil } from "rxjs/operators";
+import { map, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { StartGameComponent } from './shared/modal-pop-up/start-game/start-game.component';
 import {
@@ -34,8 +35,7 @@ enum GameEnded {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
-
-  @ViewChild("board", {static: false}) private board: ElementRef;
+  @ViewChild('board', { static: false }) private board: ElementRef;
 
   balls = [{ id: 1 }];
   _subscription: Subscription;
@@ -44,7 +44,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   gameOverFlag: boolean = false;
   ballMoveFlag: boolean = false;
 
-  destroyed$ = new ReplaySubject(1)
+  resizeFlag: boolean = false;
+
+  destroyed$ = new ReplaySubject(1);
 
   constructor(
     private store: Store,
@@ -58,8 +60,19 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   openPopUp(): void {}
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.resizeFlag = true;
+    const { width: boardWidth, height: boardHeight } =
+      this.board.nativeElement.getBoundingClientRect();
+
+    const board = Board.Instance;
+    board.setValues(boardWidth, boardHeight);
+  }
+
   ngAfterViewInit(): void {
-    const { width: boardWidth, height: boardHeight } = this.board.nativeElement.getBoundingClientRect();
+    const { width: boardWidth, height: boardHeight } =
+      this.board.nativeElement.getBoundingClientRect();
 
     const board = Board.Instance;
     board.setValues(boardWidth, boardHeight);
@@ -74,10 +87,15 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         .select(selectBricks)
         .subscribe((bricks) => {
           if (
-            bricks.filter((brick: IBrick) => brick.status === true).length === 0
+            bricks.filter((brick: IBrick) => brick.status === true).length ===
+              0 &&
+            !this.resizeFlag
           ) {
-            if (this.startFlag) this.gameOver(GameEnded.YouWon);
+            console.log('Finish');
+            //if (this.startFlag) this.gameOver(GameEnded.YouWon);
           }
+
+          this.resizeFlag = false;
         });
 
       this.ballMoveFlag = true;
@@ -106,7 +124,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       .select(selectBricks)
       .pipe(takeUntil(this.destroyed$))
       .subscribe((bricks) => {
-        if ( this.startFlag && !bricks.filter((brick: IBrick) => brick.status === true).length) {
+        if (
+          this.startFlag &&
+          !bricks.filter((brick: IBrick) => brick.status === true).length
+        ) {
           this.gameOver(GameEnded.YouWon);
         }
       });

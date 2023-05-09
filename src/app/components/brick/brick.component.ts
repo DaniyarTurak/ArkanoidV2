@@ -6,6 +6,7 @@ import {
   Input,
   Output,
   EventEmitter,
+  HostListener,
   ChangeDetectorRef,
   ChangeDetectionStrategy,
   OnChanges,

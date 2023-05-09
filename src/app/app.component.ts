@@ -1,17 +1,18 @@
 import {
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
   ElementRef,
-  HostListener,
-  OnInit,
+  HostListener, OnDestroy,
+  ViewChild,
 } from '@angular/core';
 import { Board } from './constants/Board';
 import { Store } from '@ngrx/store';
-import { Subscription, map } from 'rxjs';
+import {Subscription, ReplaySubject} from 'rxjs';
 import { UserService } from './services/user.service';
 import { BallService } from './services/ball.service';
 import { BricksService } from './services/bricks.service';
-
+import { takeUntil } from "rxjs/operators";
 import { MatDialog } from '@angular/material/dialog';
 import { StartGameComponent } from './shared/modal-pop-up/start-game/start-game.component';
 import {
@@ -24,7 +25,7 @@ import { IBrick } from './types/IBrick';
 
 enum GameEnded {
   YouWon = 'Congratulations!',
-  YouLost = 'Game Over!',
+  YouLose = 'Game Over!',
 }
 
 @Component({
@@ -32,13 +33,18 @@ enum GameEnded {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements AfterViewInit, OnDestroy {
+
+  @ViewChild("board", {static: false}) private board: ElementRef;
+
   balls = [{ id: 1 }];
   _subscription: Subscription;
   startFlag: boolean = false;
   pauseFlag: boolean = false;
   gameOverFlag: boolean = false;
   ballMoveFlag: boolean = false;
+
+  destroyed$ = new ReplaySubject(1)
 
   constructor(
     private store: Store,
@@ -52,10 +58,9 @@ export class AppComponent implements OnInit {
 
   openPopUp(): void {}
 
-  ngOnInit(): void {
-    const { width: boardWidth, height: boardHeight } = this.el.nativeElement
-      .querySelector('.board')
-      .getBoundingClientRect();
+  ngAfterViewInit(): void {
+    const { width: boardWidth, height: boardHeight } = this.board.nativeElement.getBoundingClientRect();
+
     const board = Board.Instance;
     board.setValues(boardWidth, boardHeight);
 
@@ -96,6 +101,19 @@ export class AppComponent implements OnInit {
     }
   }
 
+  playGame() {
+    this._subscription = this.store
+      .select(selectBricks)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((bricks) => {
+        if ( this.startFlag && !bricks.filter((brick: IBrick) => brick.status === true).length) {
+          this.gameOver(GameEnded.YouWon);
+        }
+      });
+
+    this.ballMoveFlag = true;
+  }
+
   gameOver(text: GameEnded) {
     //alert(text);
     this.startFlag = false;
@@ -118,7 +136,7 @@ export class AppComponent implements OnInit {
   removeBall(id: number): void {
     this.balls = this.balls.filter((ball) => ball.id !== id);
     if (this.balls.length === 0) {
-      this.gameOver(GameEnded.YouLost);
+      this.gameOver(GameEnded.YouLose);
     }
   }
 
@@ -147,5 +165,10 @@ export class AppComponent implements OnInit {
 
   closeMenu(): void {
     this.pauseFlag = false;
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

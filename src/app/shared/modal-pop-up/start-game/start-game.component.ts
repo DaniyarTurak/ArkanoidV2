@@ -1,5 +1,5 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -7,14 +7,11 @@ import { UserService } from 'src/app/services/user.service';
   templateUrl: './start-game.component.html',
   styleUrls: ['./start-game.component.scss'],
 })
-export class StartGameComponent implements OnInit {
+export class StartGameComponent {
   constructor(
     private Ref: MatDialogRef<StartGameComponent>,
     private userService: UserService
   ) {}
-
-  ngOnInit(): void {}
-
   handleStartClick(): void {
     let id = Date.now().toString();
     let userName = 'User' + id;

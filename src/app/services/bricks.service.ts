@@ -194,12 +194,10 @@ export class BricksService {
   }
 
   restartBricks() {
-    // backUpBricks.forEach((b, idx) => {
-    //   this.bricks[idx].status = true;
-    //   this.bricks[idx].hitCount = b.hitCount;
-    // });
-
-    this.bricks = [...backUpBricks];
+    backUpBricks.forEach((b, idx) => {
+      this.bricks[idx].status = true;
+      this.bricks[idx].hitCount = b.hitCount;
+    });
 
     this.store.dispatch(restartBricksCoordinates());
   }

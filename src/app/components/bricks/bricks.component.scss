@@ -2,11 +2,16 @@
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
-  max-width: 750px;
+  max-width: 530px;
   margin: 0 auto;
+  gap: 5px;
 }
 
-.bricks-container > * {
-  margin: 20px;
+.brick-wrapper {
+  position: relative;
+  border-radius: 5px;
+  //overflow: hidden;
+  width: 80px;
+  height: 30px;
 }
 

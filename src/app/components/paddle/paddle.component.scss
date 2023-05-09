@@ -5,17 +5,16 @@
 
 .paddle {
     width: variable.$paddle-width;
-    border-radius: 10px;
-    height: 30px;
+    border-radius: 5px;
+    height: 20px;
     background: variable.$linear-gradiet;
     background-color: gainsboro;
     position: absolute;
-    bottom: 0;
-    //left: 50% - math.div($paddle-width, 2);
+    bottom: 20px;
 }
 
 .removeAll {
-    left: 0%;
+    left: 0;
 }
 
 .center {

@@ -1,4 +1,8 @@
-import { ChangeDetectionStrategy } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ViewChild,
+} from '@angular/core';
 import {
   Component,
   OnInit,
@@ -6,7 +10,6 @@ import {
   ElementRef,
   HostListener,
   Input,
-  Output,
   OnChanges,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
@@ -19,12 +22,28 @@ import { setPaddleCoordinates } from 'src/app/store/paddle/paddle.actions';
   styleUrls: ['./paddle.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PaddleComponent implements OnInit, OnChanges {
+export class PaddleComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() startFlag!: boolean;
   @Input() pauseFlag!: boolean;
   @Input() ballMoveFlag!: boolean;
 
+  @ViewChild('paddle', { static: false }) private paddle: ElementRef;
+  // @ViewChild("ball", {static: false}) private ball: ElementRef;
+
   direction: number = 0;
+  board: any;
+  paddleMoveX: number = 0;
+  movementX: number = 1;
+
+  _WIDTH: number;
+
+  get ball() {
+    return this.el?.nativeElement?.parentElement.querySelector('.ball');
+  }
+
+  get paddleSize() {
+    return this.paddle?.nativeElement?.getBoundingClientRect();
+  }
 
   constructor(
     private renderer: Renderer2,
@@ -35,75 +54,83 @@ export class PaddleComponent implements OnInit, OnChanges {
   ngOnInit(): void {}
 
   ngOnChanges(): void {
-    const paddle = this.el.nativeElement.querySelector('.paddle');
-
+    if (!this.paddle) {
+      return;
+    }
     if (!this.startFlag) {
-      this.renderer.setStyle(paddle, 'transform', `translateX(-50%)`);
-      this.renderer.addClass(paddle, 'center');
+      this.renderer.setStyle(
+        this.paddle.nativeElement,
+        'transform',
+        `translateX(-50%)`
+      );
+      this.renderer.addClass(this.paddle.nativeElement, 'center');
     } else {
-      this.renderer.removeClass(paddle, 'center');
-      //   this.renderer.removeClass(ball, 'center');
+      this.renderer.removeClass(this.paddle.nativeElement, 'center');
     }
   }
 
   @HostListener('document:keydown', ['$event'])
   handleKeyDown(e: KeyboardEvent): void {
-    if (e.code === 'ArrowRight' || e.code === 'ArrowLeft') {
-      this.direction += e.code === 'ArrowRight' ? 30 : -30;
-      this.movePaddleByKeyboard();
+    if (e.code === 'ArrowLeft') {
+      if (this.paddleMoveX - this.paddleSize.width / 2 >= 0) {
+        this.paddleMoveX += -30;
+        this.movementX = -1;
+      }
+      this.movePaddle();
+    } else if (e.code === 'ArrowRight') {
+      if (this.paddleMoveX <= this._WIDTH - this.paddleSize.width / 2) {
+        this.paddleMoveX += 30;
+        this.movementX = 1;
+      }
+      this.movePaddle();
     }
-  }
-
-  movePaddleByKeyboard(): void {
-    this.renderer.setStyle(
-      this.el.nativeElement.querySelector('.paddle'),
-      'margin-left',
-      `${this.direction}px`
-    );
   }
 
   @HostListener('document:mousemove', ['$event'])
   handleMouseMove(e: MouseEvent): void {
-    if (this.startFlag && !this.pauseFlag) {
-      const board = Board.Instance;
+    //console.log(e.clientX);
+    this.paddleMoveX = e.clientX;
 
-      const paddle = this.el.nativeElement
-        .querySelector('.paddle')
-        .getBoundingClientRect();
+    this.movementX = e.movementX;
+    this.movePaddle();
+  }
 
-      if (
-        e.clientX - paddle.width / 2 >= 0 &&
-        e.clientX <= board.width - paddle.width / 2
-      ) {
-        if (e.movementX >= 0) this.direction = 1; // right
-        else this.direction = -1; // left
+  movePaddle(): void {
+    if (!this.startFlag || this.pauseFlag) {
+      return;
+    }
 
-        this.store.dispatch(
-          setPaddleCoordinates({
-            paddle,
-            direction: this.direction,
-          })
-        );
+    if (
+      this.paddleMoveX - this.paddleSize.width / 2 >= 0 &&
+      this.paddleMoveX <= this._WIDTH - this.paddleSize.width / 2
+    ) {
+      this.direction = this.movementX >= 0 ? 1 : -1; // right or left
 
+      this.store.dispatch(
+        setPaddleCoordinates({
+          paddle: this.paddleSize,
+          direction: this.direction,
+        })
+      );
+
+      this.renderer.setStyle(
+        this.paddle.nativeElement,
+        'transform',
+        `translateX(${this.paddleMoveX - this.paddleSize.width / 2}px)`
+      );
+
+      if (!this.ballMoveFlag) {
         this.renderer.setStyle(
-          this.el.nativeElement.querySelector('.paddle'),
+          this.ball,
           'transform',
-          `translateX(${e.clientX - paddle.width / 2}px)`
+          `translateX(${this.paddleMoveX - this.ball.offsetWidth / 2}px)`
         );
-
-        if (!this.ballMoveFlag) {
-          this.renderer.setStyle(
-            this.el.nativeElement.parentElement.querySelector('.ball'),
-            'transform',
-            `translateX(${
-              e.clientX -
-              this.el.nativeElement.parentElement.querySelector('.ball')
-                .offsetWidth /
-                2
-            }px)`
-          );
-        }
       }
     }
+  }
+
+  ngAfterViewInit(): void {
+    this.board = Board.Instance;
+    this._WIDTH = this.board.width - 30;
   }
 }

@@ -1,6 +1,5 @@
 <div
   class="brick"
-  [ngClass]="{ invisible: brick.hitCount <= 1 }"
+  [ngClass]="{ invisible: brick.hitCount <= 1, 'opacity-0' : brick.hitCount === 0 }"
   [ccColorChange]="brick.hitCount"
 ></div>
-<!--  -->

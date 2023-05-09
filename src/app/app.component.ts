@@ -91,8 +91,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
               0 &&
             !this.resizeFlag
           ) {
-            console.log('Finish');
-            //if (this.startFlag) this.gameOver(GameEnded.YouWon);
+            if (this.startFlag) this.gameOver(GameEnded.YouWon);
           }
 
           this.resizeFlag = false;
